@@ -1,0 +1,69 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import { STAGES } from '../data/guide';
+---
+<Section id="etapas" title="O que muda em cada etapa">
+  <p slot="intro">O texto homologado cria três degraus de restrição no uso pelos alunos e não fixa regra própria para o Ensino Médio.</p>
+
+  <ol class="scale" aria-label="Grau de restrição ao uso pelos alunos, do mais ao menos restrito">
+    {STAGES.map((s) => (
+      <li class={`lv${s.level}`}><a href={`#etapa-${s.id}`}>{s.band.split(' · ')[0]}</a></li>
+    ))}
+  </ol>
+
+  <div class="stages">
+    {STAGES.map((s) => (
+      <article class="stage card" id={`etapa-${s.id}`}>
+        <div class="top">
+          <span class="band">{s.band}</span>
+          <span class={`meter lv${s.level}`} title={`Restrição ${4 - s.level} de 4`} aria-label={`Restrição ${4 - s.level} de 4`}>
+            <i></i><i></i><i></i><i></i>
+          </span>
+        </div>
+        <h3>{s.title}</h3>
+        <ul>
+          {s.items.map((it) => (
+            <li><span class={`mark ${it.s}`}>{it.label}</span><span>{it.text}</span></li>
+          ))}
+        </ul>
+        {s.note && (
+          <aside class="note"><b>{s.note.title}</b>{s.note.text}</aside>
+        )}
+        <Ref text={s.ref} />
+      </article>
+    ))}
+  </div>
+</Section>
+
+<style>
+  .scale { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 16px; font-size: .82rem; font-weight: 500; }
+  .scale li a { display: block; padding: 8px 10px; color: var(--ink); text-decoration: none; text-align: center; border-radius: 4px; }
+  .scale li a:hover { text-decoration: underline; }
+  .scale .lv0 a { background: var(--no-bg); border: 2px solid var(--no); }
+  .scale .lv1 a { background: var(--no-bg); border: 1px solid var(--no); }
+  .scale .lv2 a { background: var(--warn-bg); border: 1px dashed var(--warn); }
+  .scale .lv3 a { background: var(--ok-bg); border: 1px solid var(--ok); }
+  .scale li:first-child a { border-radius: 8px 4px 4px 8px; }
+  .scale li:last-child a { border-radius: 4px 8px 8px 4px; }
+  @media (max-width: 560px) { .scale { grid-template-columns: repeat(2, 1fr); } }
+
+  .stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .stage { gap: 12px; scroll-margin-top: calc(var(--nav-h) + 16px); }
+  .stage:target { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .band { font-family: var(--font-mono); font-size: .76rem; color: var(--accent); background: var(--accent-soft); padding: 3px 8px; border-radius: 4px; }
+  .meter { display: inline-flex; gap: 2px; }
+  .meter i { width: 14px; height: 6px; border-radius: 2px; background: var(--surface-2); border: 1px solid var(--line); }
+  .meter.lv0 i { background: var(--no); border-color: var(--no); }
+  .meter.lv1 i:nth-child(-n+3) { background: var(--no); border-color: var(--no); opacity: .75; }
+  .meter.lv2 i:nth-child(-n+2) { background: var(--warn); border-color: var(--warn); }
+  .meter.lv3 i:nth-child(-n+1) { background: var(--ok); border-color: var(--ok); }
+  .stage ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .stage li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; font-size: .95rem; align-items: start; }
+  .stage li .mark { margin-top: 3px; justify-self: start; }
+  @media (max-width: 380px) { .stage li { grid-template-columns: 1fr; gap: 4px; } }
+  .note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: .9rem; }
+  .note b { font-family: var(--font-mono); font-size: .7rem; font-weight: 500; text-transform: uppercase; letter-spacing: .03em; color: var(--accent); display: block; margin-bottom: 2px; }
+  .stage :global(.ref) { margin-top: auto; }
+</style>

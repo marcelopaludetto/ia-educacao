@@ -1,0 +1,25 @@
+---
+interface Props {
+  /** Chave do filtro: compara com data-<group> de cada item. */
+  group: string;
+  label: string;
+  options: { val: string; text: string; n: number }[];
+}
+const { group, label, options } = Astro.props;
+---
+<div class="row" role="group" aria-label={label}>
+  <span class="lbl" aria-hidden="true">{label}</span>
+  <div class="chips" data-group={group}>
+    {options.map((o, i) => (
+      <button type="button" class="chip" data-val={o.val} aria-pressed={i === 0 ? 'true' : 'false'}>
+        {o.text}<span class="n">{o.n}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .row { display: flex; gap: 8px 12px; align-items: baseline; }
+  .lbl { font-size: .82rem; color: var(--muted); width: 72px; flex: none; }
+  @media (max-width: 640px) { .row { flex-direction: column; align-items: stretch; } .lbl { width: auto; } }
+</style>

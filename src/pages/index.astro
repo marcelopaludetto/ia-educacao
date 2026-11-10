@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Toc from '../components/Toc.astro';
+import Gist from '../components/Gist.astro';
+import Stages from '../components/Stages.astro';
+import RulesExplorer from '../components/RulesExplorer.astro';
+import RiskLadder from '../components/RiskLadder.astro';
+import Curriculum from '../components/Curriculum.astro';
+import SchoolDuties from '../components/SchoolDuties.astro';
+import Attention from '../components/Attention.astro';
+import Diffs from '../components/Diffs.astro';
+import Concordance from '../components/Concordance.astro';
+import Glossary from '../components/Glossary.astro';
+import PageViewer from '../components/PageViewer.astro';
+---
+<Base
+  title="IA na Educação Básica: guia das Diretrizes do CNE"
+  description="O que as Diretrizes do CNE para uso de Inteligência Artificial na educação permitem e proíbem na Educação Básica: regras por etapa, níveis de risco, deveres da escola e o que mudou desde a minuta."
+>
+  <Hero />
+  <Toc />
+
+  <main id="conteudo" class="wrap" tabindex="-1">
+    <Gist />
+    <Stages />
+    <RulesExplorer />
+    <RiskLadder />
+    <Curriculum />
+    <SchoolDuties />
+    <Attention />
+    <Diffs />
+    <Concordance />
+    <Glossary />
+  </main>
+
+  <footer class="wrap">
+    <p>Fontes: Parecer CNE/CP 15/2026 e Projeto de Resolução anexo (Processo 23001.001062/2024-18, PDF de 65 páginas); minuta anterior (Processo SEI 23001.000335/2025-80, PDF de 107 páginas); reportagens de 10/11/2026 sobre a homologação: <a href="https://g1.globo.com/educacao/noticia/2026/11/10/mec-homologa-regras-para-uso-da-inteligencia-artificial-na-educacao.ghtml">G1</a>, <a href="https://www.agazeta.com.br/brasil/mec-valida-regras-para-uso-da-ia-na-educacao-brasileira-1126">A Gazeta</a> e <a href="https://www.gov.br/mec/pt-br/assuntos/noticias/2026/novembro/mec-estabelece-diretrizes-para-uso-responsavel-da-ia-na-educacao">MEC</a>. Este guia resume e parafraseia; não substitui a leitura do texto nem orientação jurídica.</p>
+    <p class="no-print"><a href="#topo">Voltar ao topo ↑</a></p>
+  </footer>
+
+  <PageViewer />
+</Base>
+
+<script>
+  import '../scripts/filterable.ts';
+</script>
+
+<style>
+  main:focus { outline: none; }
+  footer { padding: 48px 20px 64px; color: var(--muted); font-size: .88rem; }
+  footer p { max-width: 78ch; }
+  footer p:first-child { border-top: 1px solid var(--line); padding-top: 18px; }
+  footer p + p { margin-top: 12px; }
+</style>

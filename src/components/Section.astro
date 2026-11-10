@@ -1,0 +1,30 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  /** Rótulo pequeno acima do título (ex.: "Comparação"). */
+  eyebrow?: string;
+}
+const { id, title, eyebrow } = Astro.props;
+---
+<section id={id} aria-labelledby={`${id}-h`}>
+  <header class="sec-head">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h2 id={`${id}-h`}>
+      <a class="anchor" href={`#${id}`} aria-label={`Link para a seção ${title}`}>#</a>{title}
+    </h2>
+    <slot name="intro" />
+  </header>
+  <slot />
+</section>
+
+<style>
+  section { padding: 56px 0 8px; }
+  .sec-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+  .sec-head :global(p) { color: var(--muted); max-width: 70ch; }
+  .eyebrow { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+  h2 { position: relative; }
+  .anchor { position: absolute; left: -1.1em; color: var(--muted); text-decoration: none; opacity: 0; transition: opacity .15s; font-weight: 500; }
+  h2:hover .anchor, .anchor:focus-visible { opacity: 1; }
+  @media (max-width: 1140px) { .anchor { display: none; } }
+</style>

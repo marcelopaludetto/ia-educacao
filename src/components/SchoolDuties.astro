@@ -1,0 +1,85 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import { SCHOOL_DUTIES } from '../data/guide';
+const total = SCHOOL_DUTIES.reduce((n, c) => n + c.items.length, 0);
+---
+<Section id="escola" title="O que escolas e redes precisam fazer">
+  <Fragment slot="intro">
+    <p>A regência humana não transfere ao professor as responsabilidades técnicas, jurídicas, contratuais e de segurança, que são da instituição, da mantenedora, dos gestores e dos fornecedores.</p>
+    <Ref text="Art. 4º, §§2º e 3º" />
+  </Fragment>
+
+  <div class="checkhead js-only" data-checklist-head>
+    <p class="small"><b>Use como checklist.</b> As marcações ficam salvas só neste navegador.</p>
+    <span class="progress small" data-checklist-progress>0 de {total}</span>
+    <button type="button" class="btn-link" data-checklist-clear>Desmarcar tudo</button>
+  </div>
+
+  <div class="cols" data-checklist>
+    {SCHOOL_DUTIES.map((c) => (
+      <div class="card">
+        <h3>{c.title}</h3>
+        <ul class="checks">
+          {c.items.map((it, i) => (
+            <li>
+              <label>
+                <input type="checkbox" class="js-only" data-key={`${c.id}-${i}`} />
+                <span>{it}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+        <Ref text={c.ref} />
+        {c.extra && (
+          <div class="extra">
+            <h3>{c.extra.title}</h3>
+            <p class="small">{c.extra.text}</p>
+            <Ref text={c.extra.ref} />
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</Section>
+
+<style>
+  .checkhead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-bottom: 14px; color: var(--muted); }
+  .progress { font-family: var(--font-mono); color: var(--accent); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .checks { list-style: none; padding-left: 0 !important; }
+  html:not(.js) .checks { list-style: disc; padding-left: 20px !important; }
+  .checks label { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; cursor: pointer; }
+  html:not(.js) .checks label { display: block; cursor: auto; }
+  .checks input { margin: 4px 0 0; width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .checks input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+  .extra { margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+</style>
+
+<script>
+  const KEY = 'checklist-escola';
+  const boxes = [...document.querySelectorAll<HTMLInputElement>('[data-checklist] input[type="checkbox"]')];
+  const progress = document.querySelector('[data-checklist-progress]');
+  const clear = document.querySelector('[data-checklist-clear]');
+
+  function load(): Record<string, boolean> {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
+  }
+  function save() {
+    const data: Record<string, boolean> = {};
+    boxes.forEach((b) => { if (b.checked) data[b.dataset.key!] = true; });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+    paint();
+  }
+  function paint() {
+    const n = boxes.filter((b) => b.checked).length;
+    if (progress) progress.textContent = `${n} de ${boxes.length}`;
+  }
+  const saved = load();
+  boxes.forEach((b) => {
+    b.checked = !!saved[b.dataset.key!];
+    b.addEventListener('change', save);
+  });
+  clear?.addEventListener('click', () => { boxes.forEach((b) => (b.checked = false)); save(); });
+  paint();
+</script>

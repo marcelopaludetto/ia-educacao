@@ -1,0 +1,23 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import { ATTENTION } from '../data/guide';
+---
+<Section id="atencao" title="Pontos de atenção">
+  <p slot="intro">Observações minhas sobre trechos que merecem leitura cuidadosa. São interpretação, não texto da norma.</p>
+  <div class="cols">
+    {ATTENTION.map((a) => (
+      <div class="card">
+        <h3>{a.title}</h3>
+        <p class="small">{a.text}</p>
+        {a.ref && <Ref text={a.ref} />}
+      </div>
+    ))}
+  </div>
+</Section>
+
+<style>
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .card { border-top: 3px solid var(--warn); }
+  .card :global(.ref) { margin-top: auto; }
+</style>

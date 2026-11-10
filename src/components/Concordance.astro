@@ -1,0 +1,68 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import ChipGroup from './ChipGroup.astro';
+import SearchBox from './SearchBox.astro';
+import { CONCORDANCE, CONC_LABEL, type ConcStatus } from '../data/concordance';
+
+const opts: [ConcStatus, string][] = [['ALT', 'Conteúdo mudou'], ['NOVO', 'Novo'], ['RED', 'Só redação'], ['IGUAL', 'Igual']];
+---
+<Section id="concordancia" title="Concordância artigo por artigo" eyebrow="Comparação">
+  <p slot="intro">Os 47 artigos da resolução homologada, cada um com o artigo de onde veio na versão anterior. Clique nos artigos para abrir a página de cada PDF e conferir.</p>
+
+  <details class="method">
+    <summary>Como a comparação foi feita</summary>
+    <p>As duas resoluções foram separadas por programa em artigos, parágrafos e incisos: 226 trechos na versão anterior e 238 na homologada. Cada trecho foi casado com o mais parecido do outro documento e comparado palavra por palavra. Resultado: 160 trechos idênticos, 50 com alteração de texto e 28 sem equivalente (novos); 21 trechos da versão anterior não têm equivalente na homologada. “Idêntico” ignora a renumeração, a pontuação final e a troca de “Inteligência Artificial” por “IA”. A classificação entre “só redação” e “conteúdo mudou” é julgamento meu sobre as diferenças encontradas.</p>
+    <p><b>Alcance.</b> Esta conferência cobre a resolução inteira (o texto normativo). Do parecer, li por completo só a Seção 5, sobre Educação Básica. O restante do parecer e o glossário não foram comparados linha a linha.</p>
+  </details>
+
+  <div data-filterable="c" data-noun="artigos">
+    <div class="filters js-only">
+      <SearchBox id="q-conc" label="Buscar artigo ou termo" placeholder="Buscar: “Art. 22”, pré-correção, dados…" />
+      <ChipGroup group="s" label="Situação" options={[
+        { val: 'all', text: 'Todos', n: CONCORDANCE.length },
+        ...opts.map(([v, t]) => ({ val: v, text: t, n: CONCORDANCE.filter((r) => r.s === v).length })),
+      ]} />
+      <p class="count"><span data-count aria-live="polite">{CONCORDANCE.length} artigos.</span> <button type="button" class="btn-link" data-reset hidden>Limpar filtros</button></p>
+    </div>
+
+    <div class="chead" aria-hidden="true"><span>Homologado</span><span>Versão anterior</span><span>Situação</span><span>O que mudou</span></div>
+    <ul class="conc">
+      {CONCORDANCE.map((r) => (
+        <li class="crow" data-item data-s={r.s}>
+          <Ref text={r.art} doc="b" tag={false} class="cart" />
+          <span class="from">
+            {r.from ? <Ref text={r.from} doc="a" /> : <span class="none">sem correspondente</span>}
+          </span>
+          <span><i class={`kind ${CONC_LABEL[r.s].kind}`}>{CONC_LABEL[r.s].label}</i></span>
+          <p>{r.note || <span class="none">Sem alteração.</span>}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="empty" data-empty hidden>
+      <p>Nenhum artigo encontrado.</p>
+      <button type="button" class="btn-link" data-reset>Limpar filtros</button>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .method { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: .92rem; margin-bottom: 16px; max-width: 86ch; }
+  .method summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  .method p { margin-top: 8px; }
+  .filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .count { font-size: .85rem; color: var(--muted); }
+  .chead, .crow { display: grid; grid-template-columns: 90px 200px 136px 1fr; gap: 14px; align-items: start; }
+  .chead { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 0 16px 6px; position: sticky; top: var(--nav-h); background: var(--bg); z-index: 1; padding-top: 8px; }
+  .conc { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .crow { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; }
+  .crow :global(.cart) { font-size: .9rem; font-weight: 500; }
+  .crow p { font-size: .92rem; }
+  .none { font-size: .8rem; color: var(--muted); font-style: italic; }
+  .empty { padding: 24px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); }
+  @media (max-width: 820px) {
+    .chead { display: none; }
+    .crow { grid-template-columns: auto 1fr auto; gap: 6px 12px; }
+    .crow p { grid-column: 1 / -1; }
+  }
+</style>

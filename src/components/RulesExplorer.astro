@@ -1,0 +1,68 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import ChipGroup from './ChipGroup.astro';
+import SearchBox from './SearchBox.astro';
+import { RULES, STATUS_LABEL, STATUS_ORDER, type Status } from '../data/rules';
+
+const sorted = [...RULES].sort((a, b) => STATUS_ORDER.indexOf(a.s) - STATUS_ORDER.indexOf(b.s));
+const cnt = (k: 's' | 't', v: string) => RULES.filter((r) => r[k] === v).length;
+const themes = [...new Set(RULES.map((r) => r.t))];
+const statusText: Record<Status, string> = { no: 'Proibido', warn: 'Com condições', ok: 'Permitido' };
+---
+<Section id="regras" title="Pode ou não pode">
+  <p slot="intro">As regras que afetam a Educação Básica no texto homologado, com o artigo de origem. “Com condições” significa que o uso é admitido se as salvaguardas do artigo forem cumpridas.</p>
+
+  <div data-filterable="r" data-noun="regras">
+    <div class="filters js-only">
+      <SearchBox id="q-regras" label="Buscar regra" placeholder="Buscar: redação, emoções, tutor, biometria…" />
+      <ChipGroup group="s" label="Situação" options={[
+        { val: 'all', text: 'Todas', n: RULES.length },
+        ...STATUS_ORDER.map((s) => ({ val: s, text: statusText[s], n: cnt('s', s) })),
+      ]} />
+      <ChipGroup group="t" label="Tema" options={[
+        { val: 'all', text: 'Todos', n: RULES.length },
+        ...themes.map((t) => ({ val: t, text: t, n: cnt('t', t) })),
+      ]} />
+      <p class="count"><span data-count aria-live="polite">{RULES.length} regras.</span> <button type="button" class="btn-link" data-reset hidden>Limpar filtros</button></p>
+    </div>
+
+    <ul class="rules">
+      {sorted.map((r) => (
+        <li class={`rule ${r.s}`} data-item data-s={r.s} data-t={r.t}>
+          <span class={`mark ${r.s}`}>{STATUS_LABEL[r.s]}</span>
+          <div class="body">
+            <p class="what">{r.w}</p>
+            {r.h && <p class="how">{r.h}</p>}
+            <span class="theme">{r.t}</span>
+          </div>
+          <Ref text={r.r} tag={false} class="rref" />
+        </li>
+      ))}
+    </ul>
+    <div class="empty" data-empty hidden>
+      <p>Nenhuma regra encontrada com esses filtros.</p>
+      <button type="button" class="btn-link" data-reset>Limpar filtros</button>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .count { font-size: .85rem; color: var(--muted); }
+  .rules { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .rule { background: var(--surface); border: 1px solid var(--line); border-left-width: 4px; border-radius: 8px; padding: 14px 16px; display: grid; grid-template-columns: 124px 1fr minmax(120px, 200px); gap: 14px; align-items: start; }
+  .rule.ok { border-left-color: var(--ok); }
+  .rule.warn { border-left-color: var(--warn); }
+  .rule.no { border-left-color: var(--no); }
+  .rule .mark { margin-top: 3px; justify-self: start; }
+  .what { font-weight: 600; }
+  .how { color: var(--muted); font-size: .93rem; margin-top: 3px; }
+  .theme { display: inline-block; font-size: .74rem; color: var(--muted); margin-top: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; }
+  .rule :global(.rref) { text-align: right; }
+  @media (max-width: 720px) {
+    .rule { grid-template-columns: 1fr; gap: 8px; }
+    .rule :global(.rref) { text-align: left; }
+  }
+  .empty { padding: 24px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); }
+</style>

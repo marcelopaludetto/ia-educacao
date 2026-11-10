@@ -1,0 +1,60 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import ChipGroup from './ChipGroup.astro';
+import { DIFFS, DIFF_LABEL, type DiffKind } from '../data/diffs';
+
+const kinds = Object.keys(DIFF_LABEL) as DiffKind[];
+const text: Record<DiffKind, string> = { tight: 'Mais restritivo', loose: 'Mais flexível', new: 'Novo', cut: 'Retirado' };
+---
+<Section id="mudancas" title="O que mudou entre a minuta e o texto homologado" eyebrow="Comparação">
+  <p slot="intro">Comparação entre a minuta (processo SEI 23001.000335/2025-80, 40 artigos) e o texto homologado (Parecer CNE/CP 15/2026, 47 artigos). Os números de artigo mudaram em quase tudo; abaixo estão as diferenças de conteúdo que afetam a Educação Básica.</p>
+
+  <div data-filterable="m" data-noun="mudanças">
+    <div class="filters js-only">
+      <ChipGroup group="k" label="Tipo" options={[
+        { val: 'all', text: 'Todas', n: DIFFS.length },
+        ...kinds.map((k) => ({ val: k, text: text[k], n: DIFFS.filter((d) => d.kind === k).length })),
+      ]} />
+      <span class="visually-hidden" data-count aria-live="polite"></span>
+    </div>
+
+    <ul class="diffs">
+      {DIFFS.map((d) => (
+        <li class="diff" data-item data-k={d.kind}>
+          <div class="head">
+            <span class={`kind ${d.kind}`}>{DIFF_LABEL[d.kind]}</span>
+            <h3>{d.topic}</h3>
+          </div>
+          <div class="old">
+            <h4>Minuta</h4>
+            <p>{d.before}</p>
+            {d.beforeRef && <Ref text={d.beforeRef} doc="a" />}
+          </div>
+          <div class="new">
+            <h4>Homologado</h4>
+            <p>{d.after}</p>
+            {d.afterRef && <Ref text={d.afterRef} doc="b" />}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .filters { margin-bottom: 14px; }
+  .diffs { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .diff { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; grid-template-columns: 150px 1fr 1fr; gap: 18px; align-items: start; }
+  .head { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .head h3 { font-size: .98rem; }
+  h4 { font-family: var(--font-mono); font-size: .68rem; font-weight: 500; color: var(--muted); margin: 0 0 4px; text-transform: uppercase; letter-spacing: .05em; }
+  .diff p { font-size: .93rem; margin-bottom: 6px; }
+  .old p { color: var(--muted); }
+  .old { padding-right: 18px; border-right: 1px solid var(--line); }
+  .diff :global(.ref) { display: block; }
+  @media (max-width: 760px) {
+    .diff { grid-template-columns: 1fr; gap: 12px; }
+    .old { padding: 0 0 12px; border-right: 0; border-bottom: 1px dashed var(--line); }
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+/**
+ * Visor das páginas dos PDFs. Os links .art funcionam sem JS (abrem a imagem);
+ * com JS, abrem este <dialog> com navegação, zoom e atalhos de teclado.
+ */
+import { DOCS } from '../data/docs';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const data = { base, docs: DOCS };
+---
+<dialog id="viewer" aria-labelledby="v-title">
+  <div class="box">
+    <div class="bar">
+      <div class="t">
+        <b id="v-title"></b>
+        <span id="v-sub"></span>
+      </div>
+      <div class="actions">
+        <button type="button" id="v-prev" aria-label="Página anterior" title="Página anterior (←)">←</button>
+        <button type="button" id="v-next" aria-label="Próxima página" title="Próxima página (→)">→</button>
+        <button type="button" id="v-zoom" aria-pressed="false" title="Ampliar (Z)">Ampliar</button>
+        <a id="v-open" target="_blank" rel="noopener" title="Abrir a imagem em nova aba">Nova aba</a>
+        <button type="button" id="v-close" class="close" title="Fechar (Esc)">Fechar</button>
+      </div>
+    </div>
+    <div class="scroll" id="v-scroll">
+      <div class="loading" id="v-loading" aria-hidden="true"></div>
+      <img id="v-img" alt="" decoding="async" />
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="viewer-data" set:html={JSON.stringify(data)}></script>
+
+<style>
+  dialog { padding: 0; border: 0; background: transparent; width: min(940px, calc(100vw - 24px)); max-width: none; height: calc(100dvh - 24px); max-height: none; margin: auto; color: var(--ink); }
+  dialog::backdrop { background: rgb(8 12 16 / .72); backdrop-filter: blur(2px); }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .bar { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .t { flex: 1; min-width: 200px; font-size: .9rem; }
+  .t b { font-family: var(--font-display); display: block; }
+  .t span { color: var(--muted); font-family: var(--font-mono); font-size: .76rem; }
+  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .actions button, .actions a { font: inherit; font-size: .88rem; font-weight: 500; cursor: pointer; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; min-height: 36px; text-decoration: none; display: inline-flex; align-items: center; }
+  .actions button:hover:not(:disabled), .actions a:hover { border-color: var(--accent); }
+  .actions button:disabled { opacity: .4; cursor: default; }
+  .actions [aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .actions .close { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .scroll { position: relative; overflow: auto; flex: 1; background: var(--surface-2); padding: 12px; text-align: center; overscroll-behavior: contain; }
+  img { max-width: 100%; height: auto; background: #fff; box-shadow: 0 1px 6px rgb(0 0 0 / .25); cursor: zoom-in; transition: opacity .15s; }
+  .scroll.zoom img { max-width: none; width: 160%; cursor: zoom-out; }
+  .scroll.busy img { opacity: .35; }
+  .loading { position: absolute; top: 40px; left: 50%; width: 28px; height: 28px; margin-left: -14px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; display: none; z-index: 1; }
+  .scroll.busy .loading { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 560px) {
+    dialog { width: 100vw; height: 100dvh; }
+    .box { border-radius: 0; }
+    .t { min-width: 100%; }
+    #v-open { display: none; }
+  }
+</style>
+
+<script>
+  type Doc = { name: string; tag: string; total: number; pad: number; pages: number[] };
+  const { base, docs } = JSON.parse(document.getElementById('viewer-data')!.textContent!) as {
+    base: string;
+    docs: Record<string, Doc>;
+  };
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const dlg = $<HTMLDialogElement>('viewer');
+  const img = $<HTMLImageElement>('v-img');
+  const scroll = $('v-scroll');
+  const prev = $<HTMLButtonElement>('v-prev');
+  const next = $<HTMLButtonElement>('v-next');
+  const zoom = $<HTMLButtonElement>('v-zoom');
+  const open = $<HTMLAnchorElement>('v-open');
+
+  const V = { doc: 'b', i: 0, label: '' };
+  const src = (doc: string, n: number) => `${base}pages/${doc}-${String(n).padStart(docs[doc].pad, '0')}.jpg`;
+
+  function setZoom(on: boolean) {
+    scroll.classList.toggle('zoom', on);
+    zoom.setAttribute('aria-pressed', String(on));
+    zoom.textContent = on ? 'Ajustar' : 'Ampliar';
+  }
+
+  function show() {
+    const d = docs[V.doc];
+    const n = d.pages[V.i];
+    const url = src(V.doc, n);
+    scroll.classList.add('busy');
+    img.src = url;
+    img.alt = `${d.name}, página ${n}`;
+    open.href = url;
+    $('v-title').textContent = d.name;
+    $('v-sub').textContent = `página ${n} de ${d.total}` + (V.label ? ` · aberto em ${V.label}` : '');
+    // Só navega entre páginas contíguas que existem como imagem.
+    prev.disabled = V.i === 0 || d.pages[V.i - 1] !== n - 1;
+    next.disabled = V.i === d.pages.length - 1 || d.pages[V.i + 1] !== n + 1;
+    scroll.scrollTo(0, 0);
+    // Pré-carrega as vizinhas.
+    for (const j of [V.i - 1, V.i + 1]) {
+      if (d.pages[j] !== undefined) new Image().src = src(V.doc, d.pages[j]);
+    }
+  }
+
+  img.addEventListener('load', () => scroll.classList.remove('busy'));
+  img.addEventListener('error', () => scroll.classList.remove('busy'));
+
+  function openPage(doc: string, page: number, label: string) {
+    const i = docs[doc]?.pages.indexOf(page) ?? -1;
+    if (i < 0) return false;
+    Object.assign(V, { doc, i, label });
+    setZoom(false);
+    show();
+    if (!dlg.open) dlg.showModal();
+    $('v-close').focus();
+    return true;
+  }
+
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a.art');
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    if (openPage(a.dataset.doc!, Number(a.dataset.page), a.dataset.label || '')) e.preventDefault();
+  });
+
+  prev.addEventListener('click', () => { V.i--; show(); });
+  next.addEventListener('click', () => { V.i++; show(); });
+  zoom.addEventListener('click', () => setZoom(!scroll.classList.contains('zoom')));
+  img.addEventListener('click', () => setZoom(!scroll.classList.contains('zoom')));
+  $('v-close').addEventListener('click', () => dlg.close());
+  // Clique fora da caixa fecha.
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && !prev.disabled) { e.preventDefault(); prev.click(); }
+    else if (e.key === 'ArrowRight' && !next.disabled) { e.preventDefault(); next.click(); }
+    else if (e.key.toLowerCase() === 'z' && !e.metaKey && !e.ctrlKey) zoom.click();
+  });
+</script>

@@ -1,0 +1,28 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import { LEARNINGS, HOW_TO_USE } from '../data/guide';
+---
+<Section id="curriculo" title="O que o aluno deve aprender sobre IA">
+  <p slot="intro">A integração ao currículo é transversal e progressiva, articulada à BNCC e à Resolução CNE/CEB 2/2025 (dispositivos digitais e educação digital e midiática). O texto fala em letramento em IA junto com os letramentos digital, midiático e computacional.</p>
+  <div class="cols">
+    <div class="card">
+      <h3>Aprendizagens previstas</h3>
+      <ol>{LEARNINGS.map((l) => <li>{l}</li>)}</ol>
+      <Ref text="Art. 20, I a X" />
+    </div>
+    <div class="card">
+      <h3>Como o uso deve acontecer</h3>
+      <ul>{HOW_TO_USE.map((l) => <li>{l}</li>)}</ul>
+      <Ref text="Art. 18, I a X e §§1º a 3º" />
+      <h3 class="sub">Autoria</h3>
+      <p class="small">Quem usa IA responde pela seleção, verificação e veracidade do que apresenta, deve ser transparente sobre o uso e atribuir autoria compatível com a contribuição humana.</p>
+      <Ref text="Art. 10, §1º" />
+    </div>
+  </div>
+</Section>
+
+<style>
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .sub { margin-top: 10px; }
+</style>

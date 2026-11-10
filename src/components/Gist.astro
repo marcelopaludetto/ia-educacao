@@ -1,0 +1,25 @@
+---
+import Section from './Section.astro';
+import Ref from './Ref.astro';
+import { GIST } from '../data/guide';
+---
+<Section id="resumo" title="O documento em seis ideias">
+  <p slot="intro">São 65 páginas: o parecer que fundamenta, o projeto de resolução com 47 artigos, um glossário e um guia de classificação de risco. Vale para escolas públicas e privadas, em todos os níveis.</p>
+  <ol class="gist">
+    {GIST.map((g, i) => (
+      <li class="card">
+        <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <h3>{g.title}</h3>
+        <p class="muted small">{g.text}</p>
+        <Ref text={g.ref} tag={false} />
+      </li>
+    ))}
+  </ol>
+</Section>
+
+<style>
+  .gist { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+  .gist li { gap: 6px; padding: 18px; }
+  .num { font-family: var(--font-mono); font-size: .75rem; color: var(--accent); }
+  .gist :global(.ref) { margin-top: auto; padding-top: 4px; }
+</style>

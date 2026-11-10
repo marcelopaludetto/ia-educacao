@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA na Educação Básica: guia das Diretrizes do CNE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: guia de leitura de norma. Coluna única larga, navegação fixa no topo,
+   cada regra é uma linha com status + texto + referência ao artigo. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eaeef3;
+  --ink:#14202b; --muted:#566473; --line:#d3dae2;
+  --accent:#1d4f7c; --accent-soft:#e3edf6;
+  --ok:#1b7447; --ok-bg:#e4f3ea;
+  --warn:#8a5a00; --warn-bg:#fbf0d6;
+  --no:#ad2a22; --no-bg:#fbe6e3;
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e151c; --surface:#16202a; --surface-2:#1d2a36;
+    --ink:#e6edf3; --muted:#9dabb8; --line:#2b3947;
+    --accent:#86b8e8; --accent-soft:#1b3046;
+    --ok:#63d097; --ok-bg:#143326;
+    --warn:#e8b95a; --warn-bg:#3a2e12;
+    --no:#f2938a; --no-bg:#3d1c1a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e151c; --surface:#16202a; --surface-2:#1d2a36;
+  --ink:#e6edf3; --muted:#9dabb8; --line:#2b3947;
+  --accent:#86b8e8; --accent-soft:#1b3046;
+  --ok:#63d097; --ok-bg:#143326;
+  --warn:#e8b95a; --warn-bg:#3a2e12;
+  --no:#f2938a; --no-bg:#3d1c1a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(1.8rem,4.2vw,2.7rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.ref{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);white-space:nowrap}
+
+/* topo */
+header.top{padding:40px 0 28px}
+.kicker{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);letter-spacing:.02em;margin-bottom:12px}
+.lead{max-width:66ch;color:var(--muted);font-size:1.08rem;margin-top:14px}
+.status-note{margin-top:22px;display:flex;gap:14px;align-items:flex-start;background:var(--warn-bg);border:1px solid var(--warn);border-radius:8px;padding:14px 16px;max-width:76ch}
+.status-note strong{color:var(--warn)}
+.status-note .tag{font-family:var(--font-mono);font-size:.72rem;font-weight:500;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:2px 6px;white-space:nowrap;margin-top:2px}
+
+nav.toc{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav.toc a{flex:none;text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:6px 10px;border-radius:6px}
+nav.toc a:hover{background:var(--surface-2);color:var(--ink)}
+
+section{padding:44px 0 8px}
+.sec-head{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.sec-head p{color:var(--muted);max-width:68ch}
+
+/* resumo */
+.gist{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.gist li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.gist{padding:0;margin:0}
+.gist b{font-family:var(--font-display);font-weight:600}
+.gist span.t{color:var(--muted);font-size:.95rem}
+
+/* etapas */
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.stage .band{font-family:var(--font-mono);font-size:.78rem;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:4px;align-self:flex-start}
+.stage ul{margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.stage li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:.96rem}
+.mark{font-family:var(--font-mono);font-size:.7rem;font-weight:500;border-radius:4px;padding:2px 6px;height:fit-content;margin-top:2px;white-space:nowrap;border:1px solid}
+.mark.ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+.mark.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn);border-style:dashed}
+.mark.no{color:var(--no);background:var(--no-bg);border-color:var(--no);border-width:2px}
+.mine{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 12px;border-radius:0 6px 6px 0;font-size:.92rem}
+.mine b{font-family:var(--font-mono);font-size:.72rem;font-weight:500;color:var(--accent);display:block;margin-bottom:2px}
+
+/* regras */
+.filters{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.frow .lbl{font-size:.82rem;color:var(--muted);width:64px}
+.chip{font:inherit;font-size:.88rem;font-weight:500;cursor:pointer;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.chip .n{font-family:var(--font-mono);font-size:.75rem;opacity:.75;margin-left:4px}
+.rules{display:flex;flex-direction:column;gap:8px;margin:0;padding:0}
+.rule{list-style:none;background:var(--surface);border:1px solid var(--line);border-left-width:4px;border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:118px 1fr auto;gap:14px;align-items:start}
+.rule.ok{border-left-color:var(--ok)}
+.rule.warn{border-left-color:var(--warn)}
+.rule.no{border-left-color:var(--no)}
+.rule .what{font-weight:600}
+.rule .how{color:var(--muted);font-size:.93rem;margin-top:3px}
+.rule .theme{font-size:.75rem;color:var(--muted);margin-top:6px}
+.count{font-size:.85rem;color:var(--muted);margin:4px 0 12px}
+@media (max-width:640px){
+  .rule{grid-template-columns:1fr;gap:8px}
+  .rule .mark{justify-self:start}
+  .frow .lbl{width:100%}
+}
+
+/* risco */
+.ladder{display:flex;flex-direction:column;gap:10px}
+.tier{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;grid-template-columns:200px 1fr 1fr;gap:20px}
+.tier h3{margin-bottom:6px}
+.tier .lvl{display:flex;flex-direction:column;gap:6px}
+.bars{display:flex;gap:3px}
+.bars i{width:22px;height:8px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
+.tier.t1 .bars i:nth-child(-n+1){background:var(--ok);border-color:var(--ok)}
+.tier.t2 .bars i:nth-child(-n+2){background:var(--warn);border-color:var(--warn)}
+.tier.t3 .bars i:nth-child(-n+3){background:var(--no);border-color:var(--no);opacity:.7}
+.tier.t4 .bars i{background:var(--no);border-color:var(--no)}
+.tier h4{font-family:var(--font-mono);font-size:.72rem;font-weight:500;color:var(--muted);margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.tier ul{margin:0;padding-left:18px;font-size:.93rem;display:flex;flex-direction:column;gap:4px}
+@media (max-width:820px){.tier{grid-template-columns:1fr;gap:14px}}
+
+/* duas colunas simples */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.card ol,.card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:.96rem}
+.card .ref{align-self:flex-start}
+
+dl.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin:0}
+dl.gloss div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+dl.gloss dt{font-family:var(--font-display);font-weight:600;margin-bottom:4px}
+dl.gloss dd{margin:0;color:var(--muted);font-size:.94rem}
+
+footer{padding:40px 0 56px;color:var(--muted);font-size:.88rem}
+footer p{max-width:76ch;border-top:1px solid var(--line);padding-top:18px}
+
+/* comparação */
+.status-note.ok{background:var(--ok-bg);border-color:var(--ok)}
+.status-note.ok strong,.status-note.ok .tag{color:var(--ok);border-color:var(--ok)}
+.diffs{display:flex;flex-direction:column;gap:8px;margin:0;padding:0}
+.diff{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:132px 1fr 1fr;gap:16px;align-items:start}
+.diff .topic{font-weight:600;margin-top:6px;font-size:.95rem}
+.diff h4{font-family:var(--font-mono);font-size:.7rem;font-weight:500;color:var(--muted);margin:0 0 4px;text-transform:uppercase;letter-spacing:.04em}
+.diff p{font-size:.93rem}
+.diff .old p{color:var(--muted)}
+.diff .ref{display:block;margin-top:4px;white-space:normal}
+.kind{font-family:var(--font-mono);font-size:.68rem;font-weight:500;border-radius:4px;padding:2px 6px;border:1px solid;display:inline-block}
+.kind.tight{color:var(--no);background:var(--no-bg);border-color:var(--no)}
+.kind.loose{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+.kind.new{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+.kind.cut{color:var(--muted);background:var(--surface-2);border-color:var(--line);border-style:dashed}
+@media (max-width:760px){.diff{grid-template-columns:1fr;gap:10px}}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.85rem;color:var(--muted);margin-bottom:14px}
+.legend span{display:flex;gap:6px;align-items:center}
+
+/* referências clicáveis e visor de página */
+.ref{white-space:normal}
+.ref button.art{font:inherit;color:var(--accent);background:none;border:0;border-bottom:1px dotted var(--accent);padding:0;cursor:pointer}
+.ref button.art:hover{background:var(--accent-soft)}
+.ref .src{font-size:.66rem;border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-right:6px;color:var(--muted);white-space:nowrap}
+.refkey{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:.92rem;margin-top:18px;max-width:76ch;display:flex;flex-direction:column;gap:6px}
+.refkey .ref .src{font-size:.72rem}
+#viewer{position:fixed;inset:0;z-index:20;background:rgba(8,12,16,.72);display:none;padding:16px}
+#viewer.open{display:flex;justify-content:center}
+#viewer .box{background:var(--surface);border:1px solid var(--line);border-radius:10px;width:min(900px,100%);height:100%;display:flex;flex-direction:column;overflow:hidden}
+#viewer .bar{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#viewer .bar .t{flex:1;min-width:200px;font-size:.9rem}
+#viewer .bar .t b{font-family:var(--font-display);display:block}
+#viewer .bar .t span{color:var(--muted);font-family:var(--font-mono);font-size:.76rem}
+#viewer .bar button{font:inherit;font-size:.88rem;font-weight:500;cursor:pointer;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:6px 12px}
+#viewer .bar button:disabled{opacity:.4;cursor:default}
+#viewer .scroll{overflow:auto;flex:1;background:var(--surface-2);padding:12px;text-align:center}
+#viewer img{max-width:100%;height:auto;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.25)}
+
+/* concordância */
+.method{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;font-size:.92rem;margin-bottom:16px;max-width:86ch}
+.chead,.crow{display:grid;grid-template-columns:120px 190px 132px 1fr;gap:14px;align-items:start}
+.chead{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:0 16px 6px}
+.conc{margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.crow{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 16px}
+.crow p{font-size:.92rem}
+.crow .none{font-size:.8rem;color:var(--muted);font-style:italic}
+.crow .ref{display:block}
+@media (max-width:820px){.chead{display:none}.crow{grid-template-columns:1fr 1fr;gap:8px}.crow p{grid-column:1/-1}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="kicker">CNE · Parecer CNE/CP 15/2026 · Processo 23001.001062/2024-18 · Projeto de Resolução</div>
+    <h1>IA na Educação Básica: o que as Diretrizes do CNE permitem e proíbem</h1>
+    <p class="lead">Guia de leitura das “Diretrizes para a Utilização da Inteligência Artificial na Educação Brasileira”, com foco no que muda para escolas, redes, professores e alunos da Educação Infantil ao Ensino Médio. Atualizado para o texto aprovado pelo CNE e homologado pelo MEC.</p>
+    <div class="status-note ok">
+      <span class="tag">HOMOLOGADO</span>
+      <p><strong>O MEC homologou o parecer em 10/11/2026.</strong> O CNE havia aprovado o texto por unanimidade em 1º/9/2026. A imprensa informa publicação no Diário Oficial prevista para 11/11. Este guia usa o segundo PDF que você enviou (Parecer 15/2026 com o Projeto de Resolução de 47 artigos), que bate com o que G1 e A Gazeta descrevem como homologado. A redação definitiva é a que sair no DOU.</p>
+    </div>
+
+    <div class="refkey">
+      <span><b>Como ler as referências.</b> Cada artigo citado é clicável e abre a página correspondente de um dos dois PDFs que você enviou.</span>
+      <span class="ref"><span class="src">HOMOLOGADO</span>2º PDF: Parecer CNE/CP 15/2026 com o Projeto de Resolução (65 páginas), arquivo gerado em 06/10/2026. É a referência de todo o guia.</span>
+      <span class="ref"><span class="src">MINUTA</span>1º PDF: versão anterior, processo SEI 23001.000335/2025-80 (107 páginas), arquivo gerado em 28/08/2026, antes da votação de 1º/9. Aparece só nas colunas de comparação.</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Seções">
+  <div class="wrap">
+    <a href="#mudancas">O que mudou</a>
+    <a href="#concordancia">Artigo por artigo</a>
+    <a href="#resumo">Resumo</a>
+    <a href="#etapas">Por etapa</a>
+    <a href="#regras">Pode ou não pode</a>
+    <a href="#risco">Níveis de risco</a>
+    <a href="#curriculo">Currículo</a>
+    <a href="#escola">Deveres da escola</a>
+    <a href="#atencao">Pontos de atenção</a>
+    <a href="#termos">Termos</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="mudancas">
+  <div class="sec-head">
+    <h2>O que mudou entre a minuta e o texto homologado</h2>
+    <p>Comparação entre o primeiro PDF (minuta, processo SEI 23001.000335/2025-80, 40 artigos) e o segundo (Parecer CNE/CP 15/2026, 47 artigos). Os números de artigo mudaram em quase tudo; abaixo estão as diferenças de conteúdo que afetam a Educação Básica.</p>
+  </div>
+  <div class="legend">
+    <span><i class="kind tight">MAIS RESTRITIVO</i></span>
+    <span><i class="kind loose">MAIS FLEXÍVEL</i></span>
+    <span><i class="kind new">NOVO</i></span>
+    <span><i class="kind cut">RETIRADO</i></span>
+  </div>
+  <ul class="diffs">
+    <li class="diff"><div><span class="kind loose">MAIS FLEXÍVEL</span><div class="topic">Correção de redação</div></div>
+      <div class="old"><h4>Minuta</h4><p>Proibido usar IA para corrigir, avaliar ou dar nota em texto autoral, “ainda que sob a forma de sugestão de nota ou de pré-correção”.</p><span class="ref">Art. 35, IX</span></div>
+      <div><h4>Homologado</h4><p>A pré-correção passa a ser admitida como aplicação de alto risco, só como etapa preparatória e auxiliar. O professor lê o texto inteiro e dá a nota. Ficam vedadas a homologação tácita, a validação em bloco e a mera ratificação do que o sistema sugeriu. Continua proibida a nota atribuída só pela IA.</p><span class="ref">Art. 40, §1º, X e §4º · Art. 41, IX</span></div></li>
+    <li class="diff"><div><span class="kind tight">MAIS RESTRITIVO</span><div class="topic">Educação Infantil</div></div>
+      <div class="old"><h4>Minuta</h4><p>Tratada junto com os Anos Iniciais: sem acesso direto da criança, mas uso mediado pelo professor era admitido.</p><span class="ref">Art. 16</span></div>
+      <div><h4>Homologado</h4><p>Vedado qualquer uso de IA pelas crianças, mesmo mediado. A IA fica restrita aos profissionais (planejamento, gestão pedagógica) e a recursos de acessibilidade.</p><span class="ref">Art. 21</span></div></li>
+    <li class="diff"><div><span class="kind tight">MAIS RESTRITIVO</span><div class="topic">Anos Iniciais (1º ao 5º)</div></div>
+      <div class="old"><h4>Minuta</h4><p>Sem acesso direto ou autônomo; uso só em atividade mediada, “sem interação direta livre” da criança.</p><span class="ref">Art. 16, §1º</span></div>
+      <div><h4>Homologado</h4><p>Mantém a regra e acrescenta: é vedada a interação dos alunos com IA generativa ou conversacional, ainda que sob supervisão. Tecnologia assistiva fica fora da restrição.</p><span class="ref">Art. 22, §§1º, 2º e 5º</span></div></li>
+    <li class="diff"><div><span class="kind new">NOVO</span><div class="topic">Anos Finais (6º ao 9º)</div></div>
+      <div class="old"><h4>Minuta</h4><p>Nenhuma regra específica para a etapa.</p></div>
+      <div><h4>Homologado</h4><p>IA generativa só em atividades pedagógicas com mediação de profissionais. Vedado o uso direto, autônomo, individual ou não supervisionado pelos alunos.</p><span class="ref">Art. 23</span></div></li>
+    <li class="diff"><div><span class="kind tight">MAIS RESTRITIVO</span><div class="topic">Treinamento de modelos</div></div>
+      <div class="old"><h4>Minuta</h4><p>Dados educacionais não podiam treinar modelos de terceiros “sem base legal adequada”. Cessão de direitos exigia consentimento formal.</p><span class="ref">Art. 33, §2º, V · Art. 10, §3º</span></div>
+      <div><h4>Homologado</h4><p>Vedado usar conteúdo de docentes e estudantes para treinar modelos de terceiros, salvo autorização específica. Para crianças e adolescentes a vedação é absoluta e entrou na lista de usos incompatíveis.</p><span class="ref">Art. 15 · Art. 41, XI</span></div></li>
+    <li class="diff"><div><span class="kind loose">MAIS FLEXÍVEL</span><div class="topic">Reconhecimento de emoções</div></div>
+      <div class="old"><h4>Minuta</h4><p>Vedado “para qualquer finalidade”.</p><span class="ref">Art. 35, II e §2º</span></div>
+      <div><h4>Homologado</h4><p>Continua vedado, mas com duas exceções: tecnologia assistiva com finalidade exclusiva de acessibilidade e consentimento, e pesquisa aprovada por comitê de ética. Nenhuma pode ter repercussão avaliativa, disciplinar ou seletiva. Saiu o parágrafo que preservava o acompanhamento socioemocional feito por profissionais como atribuição humana indelegável.</p><span class="ref">Art. 41, II e §2º</span></div></li>
+    <li class="diff"><div><span class="kind new">NOVO</span><div class="topic">Ensino sobre IA vira condição da adoção</div></div>
+      <div class="old"><h4>Minuta</h4><p>O ensino sobre IA já estava previsto: integração ao currículo, letramento em IA articulado aos letramentos digital, midiático e computacional, e a lista de dez aprendizagens. Faltava só dizer que quem adota a ferramenta é obrigado a ensinar sobre ela.</p><span class="ref">Art. 17 · Art. 18, IV · Art. 19</span></div>
+      <div><h4>Homologado</h4><p>Mantém tudo isso, com os artigos renumerados, e acrescenta um parágrafo: a adoção de sistemas de IA na Educação Básica deve vir acompanhada do ensino sobre IA no currículo.</p><span class="ref">Art. 18, IV e §1º · Art. 19 · Art. 20</span></div></li>
+    <li class="diff"><div><span class="kind new">NOVO</span><div class="topic">Material didático feito com IA</div></div>
+      <div class="old"><h4>Minuta</h4><p>Sem dever de informar.</p></div>
+      <div><h4>Homologado</h4><p>O uso de IA para elaborar, adaptar ou revisar materiais e atividades deve ser informado de forma clara. O autor continua responsável pelo conteúdo.</p><span class="ref">Art. 14, §2º</span></div></li>
+    <li class="diff"><div><span class="kind new">NOVO</span><div class="topic">Guia de classificação de risco</div></div>
+      <div class="old"><h4>Minuta</h4><p>Só o glossário como anexo.</p></div>
+      <div><h4>Homologado</h4><p>Anexo II com regras de interpretação: classifica-se cada funcionalidade, não o produto; na dúvida vale o nível mais grave; sem informação do fornecedor para classificar, não se contrata; não existe presunção de baixo risco.</p><span class="ref">Art. 2º, §2º · Anexo II</span></div></li>
+    <li class="diff"><div><span class="kind new">NOVO</span><div class="topic">Evidência de eficácia</div></div>
+      <div class="old"><h4>Minuta</h4><p>Exigia evidência de eficácia para o perfil de alunos atendidos.</p><span class="ref">Art. 6º, IX</span></div>
+      <div><h4>Homologado</h4><p>Se a evidência prévia for insuficiente, a adoção deve ser seguida de avaliação institucional dos resultados, que decide se o uso continua. Entrou também o critério de acessibilidade (Lei 13.146/2015).</p><span class="ref">Art. 6º, X e par. único</span></div></li>
+    <li class="diff"><div><span class="kind cut">RETIRADO</span><div class="topic">Proteção do professor</div></div>
+      <div class="old"><h4>Minuta</h4><p>Vedava expressamente responsabilizar o professor por falhas sistêmicas, técnicas ou contratuais fora do seu controle.</p><span class="ref">Art. 4º, §4º</span></div>
+      <div><h4>Homologado</h4><p>Esse parágrafo saiu da resolução. Permanece a regra de que a regência humana não transfere ao professor responsabilidades técnicas, jurídicas e contratuais da instituição e dos fornecedores.</p><span class="ref">Art. 4º, §2º</span></div></li>
+    <li class="diff"><div><span class="kind cut">RETIRADO</span><div class="topic">Outros cortes na resolução</div></div>
+      <div class="old"><h4>Minuta</h4><p>13 princípios; revisão “preferencialmente bienal”; classificação de risco com “caráter vinculante”; detalhamento de LGPD, explicabilidade e rastreabilidade.</p><span class="ref">Art. 3º · Art. 5º · Art. 13 · Art. 31 · Art. 38</span></div>
+      <div><h4>Homologado</h4><p>12 princípios (autonomia intelectual e metacognição saiu da lista, mas segue no parecer e no Art. 20, X). Revisão “sempre que” houver mudança relevante. Texto mais enxuto sobre dados e transparência. As vedações de aplicação imediata passam a ser as do Art. 41.</p><span class="ref">Art. 4º · Art. 37 · Art. 45 · Art. 46</span></div></li>
+    <li class="diff"><div><span class="kind cut">RETIRADO</span><div class="topic">Proteção de dados e ECA Digital</div></div>
+      <div class="old"><h4>Minuta</h4><p>Artigo próprio exigia observância rigorosa da legislação de proteção de dados, listava princípios (minimização, finalidade, retenção, eliminação segura, anonimização) e mandava aplicar o ECA Digital a crianças e adolescentes. Os contratos deviam garantir segurança, rastreabilidade, vedação de reutilização indevida de dados e responsabilidade por danos.</p><span class="ref">Art. 5º</span></div>
+      <div><h4>Homologado</h4><p>O artigo ficou reduzido aos contratos, que devem prever governança, auditoria, monitoramento e responsabilização. A proteção de dados pessoais continua como princípio e a LGPD e o ECA Digital seguem citados no preâmbulo, mas o detalhamento saiu da resolução.</p><span class="ref">Art. 4º, III · Art. 5º</span></div></li>
+    <li class="diff"><div><span class="kind tight">MAIS RESTRITIVO</span><div class="topic">Responsabilidade pedagógica</div></div>
+      <div class="old"><h4>Minuta</h4><p>Vedada a “transferência integral” da responsabilidade pedagógica para sistemas de IA.</p><span class="ref">Art. 14</span></div>
+      <div><h4>Homologado</h4><p>Vedada a “transferência” da responsabilidade pedagógica, sem o qualificativo “integral”.</p><span class="ref">Art. 14</span></div></li>
+    <li class="diff"><div><span class="kind cut">RETIRADO</span><div class="topic">Tom do Art. 1º e definição de IA</div></div>
+      <div class="old"><h4>Minuta</h4><p>Dizia que as diretrizes têm “natureza orientadora e regulatória”, que sua finalidade “não é autorizar ou estimular indiscriminadamente” o uso e que a IA “não constitui finalidade em si mesma”. Trazia uma definição de Inteligência Artificial.</p><span class="ref">Art. 1º · Art. 2º, I</span></div>
+      <div><h4>Homologado</h4><p>Essas frases e a definição de IA saíram da resolução. Continuam no texto do parecer, que fundamenta a norma.</p><span class="ref">Art. 1º · Art. 2º</span></div></li>
+  </ul>
+</section>
+
+<section id="concordancia">
+  <div class="sec-head">
+    <h2>Concordância artigo por artigo</h2>
+    <p>Os 47 artigos da resolução homologada, cada um com o artigo de onde veio na versão anterior. Clique nos artigos para abrir a página de cada PDF e conferir.</p>
+  </div>
+  <div class="method">
+    <b>Como a comparação foi feita.</b> As duas resoluções foram separadas por programa em artigos, parágrafos e incisos: 226 trechos na versão anterior e 238 na homologada. Cada trecho foi casado com o mais parecido do outro documento e comparado palavra por palavra. Resultado: 160 trechos idênticos, 50 com alteração de texto e 28 sem equivalente (novos); 21 trechos da versão anterior não têm equivalente na homologada. “Idêntico” ignora a renumeração, a pontuação final e a troca de “Inteligência Artificial” por “IA”. A classificação entre “só redação” e “conteúdo mudou” é julgamento meu sobre as diferenças encontradas.
+    <br><b>Alcance.</b> Esta conferência cobre a resolução inteira (o texto normativo). Do parecer, li por completo só a Seção 5, sobre Educação Básica. O restante do parecer e o glossário não foram comparados linha a linha.
+  </div>
+  <div class="filters"><div class="frow" id="f-conc"><span class="lbl">Mostrar</span></div></div>
+  <div class="chead"><span>Homologado</span><span>Versão anterior</span><span>Situação</span><span>O que mudou</span></div>
+  <ul class="conc" id="conc">
+<li class="crow" data-s="ALT"><span class="ref">Art. 1º</span><span class="old"><span class="ref">Art. 1º · Art. 8º, §2º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>O nome perde “Orientadoras”. Saem as expressões “natureza orientadora e regulatória”, “não é autorizar ou estimular indiscriminadamente” e “não constitui finalidade em si mesma nem pressupõe benefícios automáticos”. O §4º (uso individual × uso promovido pela escola) veio do antigo Art. 8º, §2º, sem mudança.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 2º</span><span class="old"><span class="ref">Art. 2º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>A definição de “Inteligência Artificial” (antigo inciso I) sai da lista; fica só o rol de aplicações abrangidas, no §1º. As outras cinco definições são iguais. Os anexos passam a ser dois: Glossário e Guia de Classificação de Risco.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 3º</span><span class="old"><span class="ref">Art. 2º, §1º</span></span><span><i class="kind cut">IGUAL</i></span><p>Era parágrafo, virou artigo.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 4º</span><span class="old"><span class="ref">Art. 3º · Art. 4º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>De 13 para 12 princípios: sai “autonomia intelectual e metacognição”. “Proteção de dados” vira “dados pessoais”. A regência humana passa a ser o §1º, com três incisos. Saem o parágrafo único do antigo Art. 3º, a frase “a mediação humana não se limita à revisão posterior” e o §4º do antigo Art. 4º, que vedava responsabilizar o professor por falhas fora do seu controle. §§2º e 3º iguais.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 5º</span><span class="old"><span class="ref">Art. 5º, §2º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Resta só a exigência de contratos com governança, auditoria, monitoramento e responsabilização. Saem o caput (observância rigorosa da legislação de proteção de dados), o §1º (minimização, finalidade, retenção, eliminação segura, anonimização), o §3º (ECA Digital para crianças e adolescentes) e, do §2º, os padrões de segurança, rastreabilidade, vedação de reutilização indevida de dados e responsabilidade por danos.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 6º</span><span class="old"><span class="ref">Art. 6º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Inciso IX perde “evidências de eficácia para o perfil de estudantes” e “proporcional ao nível de risco”. Entram o inciso X (acessibilidade, Lei 13.146/2015) e o parágrafo único (avaliação posterior quando faltar evidência prévia). Incisos I a VIII iguais.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 7º</span><span class="old"><span class="ref">Art. 7º</span></span><span><i class="kind cut">IGUAL</i></span><p>Só uma vírgula.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 8º</span><span class="old"><span class="ref">Art. 8º</span></span><span><i class="kind cut">IGUAL</i></span><p>Caput e §1º iguais; o antigo §4º virou §2º. O antigo §2º foi para o Art. 1º, §4º, e o antigo §3º virou o Art. 43.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 9º</span><span class="old"><span class="ref">Art. 9º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Entram “mediação pedagógica” e “mediador pedagógico”. Novo §2º: mediação feita por IA não conta para os requisitos de tutoria e interação da EaD.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 10</span><span class="old"><span class="ref">Art. 10</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>“Preservará os princípios” vira “será guiada pelos valores”. No §1º, “assumir integralmente a autoria” vira responsabilidade intelectual pela seleção, verificação, veracidade, consistência e adequação, mais transparência quanto ao uso de IA e autoria compatível com a contribuição humana. §2º igual. Sai o §3º (cessão de direitos só com consentimento formal e informado).</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 11</span><span class="old"><span class="ref">Art. 11</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 12</span><span class="old"><span class="ref">Art. 12 · Art. 13, §5º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>§1º perde “contribuindo para a responsabilização institucional e para a rastreabilidade”. O §4º (antigo Art. 13, §5º) perde o trecho sobre responsabilidade final compartilhada entre instituição, sistema de ensino, mantenedora, gestores e fornecedores. §§2º e 3º iguais.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 13</span><span class="old"><span class="ref">Art. 13</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Caput igual; o parágrafo único é o antigo §3º. Saem o §1º (proporcionalidade dos mecanismos de governança; ideia semelhante segue no Art. 36), o §2º (explicabilidade e rastreabilidade) e o §4º (revisão humana quando houver impacto sobre direitos ou avaliação).</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 14</span><span class="old"><span class="ref">Art. 14</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>“Transferência integral da responsabilidade pedagógica” vira “transferência”: a vedação fica mais ampla. Novo §2º: informar quando material didático usa IA.</p></li>
+<li class="crow" data-s="NOVO"><span class="ref">Art. 15</span><span class="old"><span class="none">sem correspondente</span></span><span><i class="kind new">NOVO</i></span><p>Vedação de treinar modelos de terceiros com conteúdos de docentes e estudantes, salvo autorização específica; absoluta para crianças e adolescentes. Temas próximos na versão anterior: Art. 10, §3º e Art. 33, §2º, V.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 16</span><span class="old"><span class="ref">Art. 16, §4º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>A vedação de publicidade direcionada e exploração comercial valia para Educação Infantil e Anos Iniciais; vira regra geral e passa a cobrir dados de docentes.</p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 17</span><span class="old"><span class="ref">Art. 15</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>Acrescenta remissão aos princípios do Art. 4º.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 18</span><span class="old"><span class="ref">Art. 18 · Art. 15, par. único</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Incisos I a X iguais. Novos §1º (adoção de IA acompanhada do ensino sobre IA) e §3º (acompanhamento pedagógico em qualquer hipótese). O §2º reescreve o antigo parágrafo único do Art. 15 sobre adequação etária.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 19</span><span class="old"><span class="ref">Art. 17</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Passa a citar as Diretrizes Operacionais sobre dispositivos digitais. §1º igual. §2º reescrito: saem “contextualização das aprendizagens” e “interdisciplinaridade”; entram “contextos sociais, culturais e tecnológicos”.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 20</span><span class="old"><span class="ref">Art. 19</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Incisos iguais, exceto o VIII, que ganha “ambientais”. No parágrafo único, “em todas as etapas” vira “nas etapas em que seja admitida a utilização pelos estudantes”, e sai o trecho “privilegiando a exploração orientada, a criatividade, a resolução de problemas…”.</p></li>
+<li class="crow" data-s="NOVO"><span class="ref">Art. 21</span><span class="old"><span class="ref">Art. 16</span></span><span><i class="kind new">NOVO</i></span><p>Regra própria para a Educação Infantil: uso só por profissionais e para acessibilidade; vedado às crianças mesmo com mediação. Antes a etapa era tratada junto com os Anos Iniciais.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 22</span><span class="old"><span class="ref">Art. 16</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Caput é o antigo §1º, sem “sem interação direta livre da criança com a ferramenta” e “sem coleta desnecessária de dados pessoais”. §1º traz a vedação de acesso direto (antes no caput, com a lista “generativo, conversacional, preditivo ou adaptativo”). §2º novo: vedada IA generativa ou conversacional mesmo com supervisão. §3º igual ao antigo §2º. §4º é o antigo §3º, agora só para Anos Iniciais. §5º novo: exceção para tecnologia assistiva.</p></li>
+<li class="crow" data-s="NOVO"><span class="ref">Art. 23</span><span class="old"><span class="none">sem correspondente</span></span><span><i class="kind new">NOVO</i></span><p>Anos Finais: IA generativa só com mediação; vedado uso direto, autônomo, individual ou não supervisionado.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 24</span><span class="old"><span class="ref">Art. 16, §4º</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Vedação de publicidade e exploração comercial estendida a toda a Educação Básica.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 25</span><span class="old"><span class="ref">Art. 20</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 26</span><span class="old"><span class="ref">Art. 21</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>“Articular-se-ão” vira “serão articulados”.</p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 27</span><span class="old"><span class="ref">Art. 22</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>§1º perde a frase final “assegurando coerência entre as diretrizes institucionais…”. Resto igual.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 28</span><span class="old"><span class="ref">Art. 23</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 29</span><span class="old"><span class="ref">Art. 24</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Passa a falar em gestão “acadêmica e escolar”. Sai a lista de usos (planejamento, indicadores, risco de evasão). A vedação de decisão exclusivamente automatizada vira parágrafo único.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 30</span><span class="old"><span class="ref">Art. 25</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 31</span><span class="old"><span class="ref">Art. 27, par. único</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>“Contribuirá” vira “deverá contribuir”.</p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 32</span><span class="old"><span class="ref">Art. 26, §1º</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>Saem o caput e o §2º do antigo Art. 26 (metodologias ativas, projetos, simulação).</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 33</span><span class="old"><span class="ref">Art. 27</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 34</span><span class="old"><span class="ref">Art. 28</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>A remissão muda: antes apontava para o Art. 5º (proteção de dados); agora aponta para o Art. 32.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 35</span><span class="old"><span class="ref">Art. 29</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="RED"><span class="ref">Art. 36</span><span class="old"><span class="ref">Art. 30</span></span><span><i class="kind cut">SÓ REDAÇÃO</i></span><p>Sai a frase final sobre evitar exigências desnecessárias ou salvaguardas insuficientes. §§1º a 3º iguais.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 37</span><span class="old"><span class="ref">Art. 31</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>No parágrafo único, a classificação “possui caráter vinculante quanto às categorias” vira “estabelece as categorias”.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 38</span><span class="old"><span class="ref">Art. 32</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>As condições (sem perfilização individual, dados sensíveis, monitoramento contínuo, interação contínua ou decisão automatizada) sobem do §1º para o caput. “Podem ser compreendidas como” vira “são”. Lista de exemplos igual.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 39</span><span class="old"><span class="ref">Art. 33</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Mesma mudança de estrutura do Art. 38. No §2º, V, “sem base legal adequada” vira “ressalvada autorização específica e revogável”, com remissão ao Art. 41, XI.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 40</span><span class="old"><span class="ref">Art. 34</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Incisos I a IX e §§2º e 3º iguais. Novos inciso X e §4º: pré-correção de dissertativas admitida como apoio, com leitura integral pelo professor.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 41</span><span class="old"><span class="ref">Art. 35</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>Inciso II perde “para qualquer finalidade”. Inciso IX reescrito: antes vedava correção, avaliação ou nota por IA “ainda que sob a forma de sugestão de nota ou de pré-correção”; agora veda a nota exclusivamente por IA ou sem correção humana. Novo inciso XI (dados de crianças e adolescentes para treinar modelos). O §2º mudou de conteúdo: antes preservava o acompanhamento socioemocional feito por profissionais; agora traz exceções para tecnologia assistiva e pesquisa. Demais incisos e §1º iguais.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 42</span><span class="old"><span class="ref">Art. 36</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 43</span><span class="old"><span class="ref">Art. 8º, §3º</span></span><span><i class="kind cut">IGUAL</i></span><p>Era parágrafo, virou artigo.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 44</span><span class="old"><span class="ref">Art. 37</span></span><span><i class="kind cut">IGUAL</i></span><p>“Constituição Federal” vira “Constituição”.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 45</span><span class="old"><span class="ref">Art. 38</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>“Manterá mecanismo permanente de acompanhamento” vira “acompanhará”. Sai “preferencialmente, em ciclos bienais”.</p></li>
+<li class="crow" data-s="ALT"><span class="ref">Art. 46</span><span class="old"><span class="ref">Art. 39</span></span><span><i class="kind tight">CONTEÚDO MUDOU</i></span><p>As vedações de aplicação imediata eram as “previstas no Parecer”; agora são as “previstas no art. 41”.</p></li>
+<li class="crow" data-s="IGUAL"><span class="ref">Art. 47</span><span class="old"><span class="ref">Art. 40</span></span><span><i class="kind cut">IGUAL</i></span><p></p></li>
+  </ul>
+</section>
+
+<section id="resumo">
+  <div class="sec-head">
+    <h2>O documento em seis ideias</h2>
+    <p>São 65 páginas: o parecer que fundamenta, o projeto de resolução com 47 artigos, um glossário e um guia de classificação de risco. Vale para escolas públicas e privadas, em todos os níveis.</p>
+  </div>
+  <ul class="gist">
+    <li><b>Cada uso precisa de justificativa pedagógica</b><span class="t">A norma exige finalidade educacional legítima, necessidade, proporcionalidade e supervisão humana para cada aplicação.</span><span class="ref">Art. 1º, §2º</span></li>
+    <li><b>O professor não pode ser substituído</b><span class="t">É vedado trocar a atuação docente por sistema automatizado ou transferir à IA a responsabilidade pedagógica.</span><span class="ref">Art. 4º, §1º · Art. 14</span></li>
+    <li><b>Restrições por etapa até o 9º ano</b><span class="t">Proibido para crianças na Educação Infantil; sem IA generativa nos Anos Iniciais; IA generativa só com mediação nos Anos Finais.</span><span class="ref">Art. 21 a 23</span></li>
+    <li><b>Quanto maior o impacto no aluno, mais exigências</b><span class="t">Quatro níveis de risco: baixo, moderado, alto e incompatível. O último é proibido.</span><span class="ref">Art. 36 a 41</span></li>
+    <li><b>IA pode pré-corrigir redação, a nota é do professor</b><span class="t">Pré-correção é alto risco e exige leitura integral pelo professor. Nota dada só pela IA é proibida.</span><span class="ref">Art. 40, §4º · Art. 41, IX</span></li>
+    <li><b>IA entra no currículo</b><span class="t">Como objeto de estudo e como recurso, de forma transversal e progressiva. Quem adota IA precisa também ensinar sobre IA.</span><span class="ref">Art. 18, §1º · Art. 19 · Art. 20</span></li>
+  </ul>
+</section>
+
+<section id="etapas">
+  <div class="sec-head">
+    <h2>O que muda em cada etapa</h2>
+    <p>O texto homologado cria três degraus de restrição no uso pelos alunos e não fixa regra própria para o Ensino Médio.</p>
+  </div>
+  <div class="stages">
+    <article class="stage">
+      <span class="band">Educação Infantil</span>
+      <h3>Criança não usa IA</h3>
+      <ul>
+        <li><span class="mark no">PROIBIDO</span><span>Uso de qualquer sistema de IA pelas crianças, mesmo com mediação de profissionais.</span></li>
+        <li><span class="mark ok">PERMITIDO</span><span>Profissionais usarem IA em planejamento e gestão pedagógica.</span></li>
+        <li><span class="mark warn">CONDIÇÃO</span><span>Recursos de acessibilidade, só para eliminar barreiras, sem inferência sensível, perfil individual ou efeito decisório sobre a criança.</span></li>
+      </ul>
+      <span class="ref">Art. 21</span>
+    </article>
+    <article class="stage">
+      <span class="band">Anos Iniciais · 1º ao 5º ano</span>
+      <h3>Só atividade mediada, sem IA generativa</h3>
+      <ul>
+        <li><span class="mark no">PROIBIDO</span><span>Acesso direto, autônomo, individual ou não supervisionado a sistemas de IA.</span></li>
+        <li><span class="mark no">PROIBIDO</span><span>Interação dos alunos com IA generativa ou conversacional, mesmo sob supervisão.</span></li>
+        <li><span class="mark warn">CONDIÇÃO</span><span>Outros recursos de IA apenas em atividades planejadas, conduzidas e mediadas pelo profissional, com comunicação às famílias e proteção de dados.</span></li>
+        <li><span class="mark ok">PERMITIDO</span><span>Tecnologia assistiva e recursos de acessibilidade ficam fora dessas restrições.</span></li>
+      </ul>
+      <span class="ref">Art. 22</span>
+    </article>
+    <article class="stage">
+      <span class="band">Anos Finais · 6º ao 9º ano</span>
+      <h3>IA generativa só com mediação</h3>
+      <ul>
+        <li><span class="mark warn">CONDIÇÃO</span><span>Ferramentas generativas podem ser usadas em atividades pedagógicas com mediação de profissionais da educação.</span></li>
+        <li><span class="mark no">PROIBIDO</span><span>Uso direto, autônomo, individual ou não supervisionado dessas ferramentas pelos alunos.</span></li>
+      </ul>
+      <div class="mine"><b>LEITURA MINHA, NÃO ESTÁ NO TEXTO</b>O artigo fala só de IA generativa. Plataformas adaptativas ou tutores não generativos caem nas regras gerais e na classificação de risco.</div>
+      <span class="ref">Art. 23</span>
+    </article>
+    <article class="stage">
+      <span class="band">Ensino Médio</span>
+      <h3>Sem proibição específica de uso individual</h3>
+      <ul>
+        <li><span class="mark ok">PREVISTO</span><span>IA como objeto de aprendizagem e recurso pedagógico; contato progressivo, mediado e contextualizado.</span></li>
+        <li><span class="mark warn">CONDIÇÃO</span><span>Ferramentas seguem as salvaguardas do nível de risco em que se enquadram e a adequação etária.</span></li>
+        <li><span class="mark no">PROIBIDO</span><span>Publicidade direcionada, perfilização mercadológica ou exploração comercial de dados, em qualquer etapa.</span></li>
+      </ul>
+      <div class="mine"><b>O QUE O TEXTO NÃO DIZ</b>A resolução não tem artigo próprio para o Ensino Médio. O G1 registra a mesma leitura: não há proibição específica ao uso individual nessa etapa.</div>
+      <span class="ref">Art. 17 a 20 · Art. 24</span>
+    </article>
+  </div>
+</section>
+
+<section id="regras">
+  <div class="sec-head">
+    <h2>Pode ou não pode</h2>
+    <p>As regras que afetam a Educação Básica no texto homologado, com o artigo de origem. “Com condições” significa que o uso é admitido se as salvaguardas do artigo forem cumpridas.</p>
+  </div>
+  <div class="filters">
+    <div class="frow" id="f-status"><span class="lbl">Situação</span></div>
+    <div class="frow" id="f-theme"><span class="lbl">Tema</span></div>
+  </div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <ul class="rules" id="rules"></ul>
+</section>
+
+<section id="risco">
+  <div class="sec-head">
+    <h2>Os quatro níveis de risco</h2>
+    <p>As listas de exemplos não são exaustivas. Se uma ferramenta se encaixa em mais de um nível, vale o mais alto; na dúvida, o Anexo II manda adotar a classificação mais grave.</p>
+    <span class="ref">Art. 7º, §1º · Art. 37 · Anexo II</span>
+  </div>
+  <div class="ladder">
+    <div class="tier t1">
+      <div class="lvl"><div class="bars"><i></i><i></i><i></i><i></i></div><h3>Baixo</h3><span class="ref">Art. 38</span><p style="font-size:.92rem;color:var(--muted)">Apoio instrumental, sem impacto relevante em direitos, notas ou trajetória, e sem interação contínua com alunos.</p></div>
+      <div><h4>Exemplos</h4><ul><li>Organizar ou adaptar material didático</li><li>Apoio ao planejamento de aulas</li><li>Revisão de texto sem valor de nota</li><li>Tradução, resumo, formatação</li><li>Transcrição, legenda, leitor de tela</li></ul></div>
+      <div><h4>O que se exige</h4><ul><li>Transparência e segurança da informação</li><li>Proteção de dados pessoais</li><li>Registro simplificado da finalidade</li><li>Possibilidade de supervisão humana</li><li>Classificação documentada: não vale presumir baixo risco</li></ul></div>
+    </div>
+    <div class="tier t2">
+      <div class="lvl"><div class="bars"><i></i><i></i><i></i><i></i></div><h3>Moderado</h3><span class="ref">Art. 39</span><p style="font-size:.92rem;color:var(--muted)">Piso para toda aplicação que interage individualmente com alunos ou trata seus dados de forma sistemática.</p></div>
+      <div><h4>Exemplos</h4><ul><li>Tutores e apoio pedagógico automatizado</li><li>Feedback formativo sem efeito em nota</li><li>Assistentes de atendimento e orientação</li><li>Apoio à escrita, pesquisa e estudo</li><li>Recomendações e trilhas personalizadas</li></ul></div>
+      <div><h4>O que se exige</h4><ul><li>Comunicar a comunidade escolar</li><li>Registrar finalidade, público, dados e responsáveis</li><li>Revisão humana obrigatória das recomendações</li><li>Monitorar erros, alucinações e vieses</li><li>Canal de contestação</li><li>Reclassificar se a ferramenta ganhar funções</li></ul></div>
+    </div>
+    <div class="tier t3">
+      <div class="lvl"><div class="bars"><i></i><i></i><i></i><i></i></div><h3>Alto</h3><span class="ref">Art. 40</span><p style="font-size:.92rem;color:var(--muted)">Pode influenciar nota, progressão, seleção, benefício ou disciplina. Admissão excepcional.</p></div>
+      <div><h4>Exemplos</h4><ul><li>Pré-correção de redação e questão dissertativa</li><li>Apoio à correção de prova objetiva que vale nota</li><li>Proctoring em avaliações</li><li>Predição de evasão, desempenho ou conduta</li><li>Dados sensíveis: saúde, deficiência, biometria</li><li>Detectores de texto gerado por IA</li></ul></div>
+      <div><h4>O que se exige</h4><ul><li>Avaliação prévia de impacto algorítmico</li><li>Relatório de impacto à proteção de dados, quando couber</li><li>Supervisão humana contínua e documentada</li><li>Validação humana prévia e individual; nada de validação em bloco</li><li>Auditoria, rastreabilidade, contestação</li><li>Preferir alternativa menos invasiva</li></ul></div>
+    </div>
+    <div class="tier t4">
+      <div class="lvl"><div class="bars"><i></i><i></i><i></i><i></i></div><h3>Incompatível</h3><span class="ref">Art. 41</span><p style="font-size:.92rem;color:var(--muted)">Vedado em qualquer escola ou rede.</p></div>
+      <div><h4>Exemplos</h4><ul><li>Reconhecimento de emoções</li><li>Vigilância biométrica contínua</li><li>Pontuação social</li><li>Nota de redação dada só pela IA</li><li>Decisão 100% automatizada sobre aprovação ou sanção</li><li>Dados de alunos para publicidade</li><li>Dados de crianças e adolescentes para treinar modelos de terceiros</li></ul></div>
+      <div><h4>O que se exige</h4><ul><li>Não usar. Estas vedações valem desde a publicação da resolução, sem esperar os 12 meses de adequação.</li></ul><span class="ref">Art. 46</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="curriculo">
+  <div class="sec-head">
+    <h2>O que o aluno deve aprender sobre IA</h2>
+    <p>A integração ao currículo é transversal e progressiva, articulada à BNCC e à Resolução CNE/CEB 2/2025 (dispositivos digitais e educação digital e midiática). O texto fala em letramento em IA junto com os letramentos digital, midiático e computacional.</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3>Aprendizagens previstas</h3>
+      <ol>
+        <li>Como funcionam sistemas computacionais e aplicações de IA, seus limites e impactos</li>
+        <li>O papel dos dados nos sistemas de IA</li>
+        <li>Pensamento lógico, analítico e crítico</li>
+        <li>Identificar limites, riscos e vieses</li>
+        <li>Desinformação, manipulação digital, conteúdo sintético e influência automatizada</li>
+        <li>Verificar fontes e validar informações</li>
+        <li>Diferença entre apoio tecnológico e elaboração própria; honestidade acadêmica</li>
+        <li>Impactos sociais, econômicos, culturais, políticos, ambientais e éticos</li>
+        <li>Comportamento responsável, ético e seguro no ambiente digital</li>
+        <li>Metacognição: refletir sobre o próprio pensar e aprender mediado por IA</li>
+      </ol>
+      <span class="ref">Art. 20, I a X</span>
+    </div>
+    <div class="card">
+      <h3>Como o uso deve acontecer</h3>
+      <ul>
+        <li>Adotar IA implica ensinar sobre IA no currículo</li>
+        <li>Desenvolvimento integral: cognitivo, social e emocional</li>
+        <li>Inclusão, acessibilidade e personalização</li>
+        <li>Preservar autonomia intelectual e evitar dependência excessiva da tecnologia</li>
+        <li>Alternativas pedagógicas para quem não tem conectividade ou dispositivo</li>
+        <li>Adequação etária, que inclui as condições de uso e não só a idade mínima</li>
+        <li>Acompanhamento pedagógico do uso de IA em qualquer hipótese</li>
+      </ul>
+      <span class="ref">Art. 18, I a X e §§1º a 3º</span>
+      <h3 style="margin-top:8px">Autoria</h3>
+      <p style="font-size:.96rem">Quem usa IA responde pela seleção, verificação e veracidade do que apresenta, deve ser transparente sobre o uso e atribuir autoria compatível com a contribuição humana.</p>
+      <span class="ref">Art. 10, §1º</span>
+    </div>
+  </div>
+</section>
+
+<section id="escola">
+  <div class="sec-head">
+    <h2>O que escolas e redes precisam fazer</h2>
+    <p>A regência humana não transfere ao professor as responsabilidades técnicas, jurídicas, contratuais e de segurança, que são da instituição, da mantenedora, dos gestores e dos fornecedores.</p>
+    <span class="ref">Art. 4º, §§2º e 3º</span>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3>Antes de adotar uma ferramenta</h3>
+      <ul>
+        <li>Decisão técnica e pedagógica fundamentada, com participação da comunidade escolar</li>
+        <li>Evidência de eficácia; se for insuficiente, avaliar os resultados depois e decidir se continua</li>
+        <li>Adequação ao contexto brasileiro e ao perfil dos alunos</li>
+        <li>Análise de onde os dados ficam e como são protegidos</li>
+        <li>Infraestrutura, conectividade e suporte suficientes</li>
+        <li>Impacto sobre inclusão e potencial de acessibilidade</li>
+        <li>Classificar o risco de cada funcionalidade; sem informação do fornecedor, não contratar</li>
+      </ul>
+      <span class="ref">Art. 6º · Anexo II</span>
+    </div>
+    <div class="card">
+      <h3>Durante o uso</h3>
+      <ul>
+        <li>Comunicar a alunos, professores e famílias que há IA e para quê</li>
+        <li>Informar quando material didático foi feito com apoio de IA</li>
+        <li>Documentar decisões e parâmetros de uso</li>
+        <li>Reavaliar periodicamente a classificação de risco</li>
+        <li>Dar ao professor formação, tempo e apoio técnico para revisar resultados</li>
+        <li>Prever em contrato governança, auditoria, monitoramento e responsabilização do fornecedor</li>
+      </ul>
+      <span class="ref">Art. 5º · Art. 12 · Art. 13 · Art. 14, §2º · Art. 42</span>
+    </div>
+    <div class="card">
+      <h3>Formação docente permanente</h3>
+      <ul>
+        <li>Alfabetização algorítmica</li>
+        <li>Elaboração de comandos (prompts)</li>
+        <li>Curadoria crítica de conteúdo gerado</li>
+        <li>Avaliação mediada por tecnologia</li>
+        <li>Proteção de dados pessoais</li>
+        <li>Integridade acadêmica</li>
+        <li>Identificação e mitigação de vieses</li>
+      </ul>
+      <span class="ref">Art. 11, I a VII</span>
+      <h3 style="margin-top:8px">Prazo</h3>
+      <p style="font-size:.96rem">12 meses após a publicação para adequar políticas, práticas e contratos. As vedações do Art. 41 valem desde a publicação.</p>
+      <span class="ref">Art. 46</span>
+    </div>
+  </div>
+</section>
+
+<section id="atencao">
+  <div class="sec-head">
+    <h2>Pontos de atenção</h2>
+    <p>Observações minhas sobre trechos que merecem leitura cuidadosa. São interpretação, não texto da norma.</p>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>Pré-correção: a linha é o efeito avaliativo</h3><p style="font-size:.96rem">A IA pode preparar a correção, mas pontuação gerada pelo sistema não pode produzir efeito sem correção humana, e o professor precisa ler o texto inteiro. Aceitar a nota sugerida em lote ou apenas confirmá-la é vedado. Para um produto de correção de redação, o desenho do fluxo do professor passa a ser o ponto regulado.</p><span class="ref">Art. 40, §4º</span></div>
+    <div class="card"><h3>Parecer e resolução divergem no tom</h3><p style="font-size:.96rem">Para os Anos Iniciais, o parecer diz que IA generativa e conversacional “não é recomendada”, nem com mediação; a resolução diz “é vedada”. Para a Educação Infantil, o parecer “recomenda a restrição total” e a resolução veda. Vale o texto da resolução.</p><span class="ref">Parecer, Seção 5 × Art. 21 e 22</span></div>
+    <div class="card"><h3>Anos Finais: o que conta como mediação</h3><p style="font-size:.96rem">O Art. 23 exige mediação de profissionais e veda uso individual ou não supervisionado de IA generativa. O texto não define se uma tarefa de casa com ferramenta generativa, orientada pelo professor, cumpre o requisito.</p><span class="ref">Art. 23</span></div>
+    <div class="card"><h3>Uso individual fica fora do alcance</h3><p style="font-size:.96rem">A norma separa o uso promovido pela escola do uso que alunos e professores fazem por conta própria, reconhecendo que este tem controle institucional limitado. As obrigações recaem sobre o primeiro.</p><span class="ref">Art. 1º, §4º</span></div>
+    <div class="card"><h3>Treinamento de modelos com dados de menores</h3><p style="font-size:.96rem">A vedação para crianças e adolescentes não admite autorização. Contratos de plataformas usadas na Educação Básica precisam excluir esse uso, e a vedação vale desde a publicação.</p><span class="ref">Art. 15, par. único · Art. 41, XI · Art. 46</span></div>
+    <div class="card"><h3>Confira o texto do Diário Oficial</h3><p style="font-size:.96rem">O PDF analisado traz o “Projeto de Resolução” anexo ao parecer, com a data de homologação em branco. A imprensa relata ajustes negociados entre CNE e MEC na parte de correção de dissertativas; o PDF já contém a pré-correção, mas a redação publicada pode ter diferenças pontuais.</p></div>
+  </div>
+</section>
+
+<section id="termos">
+  <div class="sec-head">
+    <h2>Termos que a norma define</h2>
+    <span class="ref">Art. 2º · Anexo I (Glossário)</span>
+  </div>
+  <dl class="gloss">
+    <div><dt>Supervisão humana significativa</dt><dd>Pessoa com capacidade real de compreender, acompanhar, contestar, corrigir ou interromper o resultado da IA, em condições institucionais adequadas.</dd></div>
+    <div><dt>Decisão exclusivamente automatizada</dt><dd>Decisão produzida pelo sistema sem validação humana efetiva, prévia e qualificada.</dd></div>
+    <div><dt>Perfilização</dt><dd>Tratamento automatizado de dados pessoais para avaliar, classificar, prever ou inferir comportamento, desempenho, interesses, riscos ou vulnerabilidade.</dd></div>
+    <div><dt>Pré-correção</dt><dd>Etapa preparatória, sem efeito avaliativo próprio, em que a IA auxilia a correção feita pelo professor.</dd></div>
+    <div><dt>IA de propósito geral</dt><dd>Aplicação criada sem finalidade educacional específica, ainda que usada na escola.</dd></div>
+    <div><dt>Solução educacional específica</dt><dd>Aplicação de IA concebida ou adaptada para fins educacionais.</dd></div>
+  </dl>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Fontes: Parecer CNE/CP 15/2026 e Projeto de Resolução anexo (Processo 23001.001062/2024-18, PDF de 65 páginas); minuta anterior (Processo SEI 23001.000335/2025-80, PDF de 107 páginas); reportagens de 10/11/2026 sobre a homologação: <a href="https://g1.globo.com/educacao/noticia/2026/11/10/mec-homologa-regras-para-uso-da-inteligencia-artificial-na-educacao.ghtml">G1</a>, <a href="https://www.agazeta.com.br/brasil/mec-valida-regras-para-uso-da-ia-na-educacao-brasileira-1126">A Gazeta</a> e <a href="https://www.gov.br/mec/pt-br/assuntos/noticias/2026/novembro/mec-estabelece-diretrizes-para-uso-responsavel-da-ia-na-educacao">MEC</a>. Este guia resume e parafraseia; não substitui a leitura do texto nem orientação jurídica.</p>
+  </div>
+</footer>
+
+<div id="viewer" role="dialog" aria-modal="true" aria-labelledby="v-title">
+  <div class="box">
+    <div class="bar">
+      <div class="t"><b id="v-title"></b><span id="v-sub"></span></div>
+      <button type="button" id="v-prev">Página anterior</button>
+      <button type="button" id="v-next">Próxima página</button>
+      <button type="button" id="v-close">Fechar</button>
+    </div>
+    <div class="scroll"><img id="v-img" alt=""></div>
+  </div>
+</div>
+
+<script>
+
+const DOCS = {"a": {"name": "Minuta (1º PDF)", "tag": "MINUTA", "total": 107, "pad": 3, "pages": [18, 19, 20, 21, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59], "arts": {"1": 37, "2": 38, "3": 39, "4": 39, "5": 40, "6": 41, "7": 41, "8": 42, "9": 43, "10": 43, "11": 43, "12": 44, "13": 44, "14": 45, "15": 45, "16": 45, "17": 46, "18": 46, "19": 47, "20": 48, "21": 48, "22": 49, "23": 49, "24": 49, "25": 49, "26": 50, "27": 51, "28": 51, "29": 51, "30": 51, "31": 52, "32": 52, "33": 53, "34": 54, "35": 56, "36": 57, "37": 57, "38": 58, "39": 58, "40": 58}, "sec5": 18}, "b": {"name": "Parecer CNE/CP 15/2026, texto homologado (2º PDF)", "tag": "HOMOLOGADO", "total": 65, "pad": 2, "pages": [16, 17, 18, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 61, 62, 63], "arts": {"1": 34, "2": 35, "3": 35, "4": 35, "5": 36, "6": 36, "7": 37, "8": 37, "9": 38, "10": 38, "11": 38, "12": 38, "13": 39, "14": 39, "15": 39, "16": 39, "17": 40, "18": 40, "19": 41, "20": 41, "21": 42, "22": 42, "23": 42, "24": 42, "25": 42, "26": 43, "27": 43, "28": 43, "29": 43, "30": 43, "31": 44, "32": 44, "33": 44, "34": 44, "35": 44, "36": 45, "37": 45, "38": 45, "39": 46, "40": 47, "41": 49, "42": 49, "43": 50, "44": 50, "45": 50, "46": 50, "47": 50}, "sec5": 16, "an2": 61}};
+const V = {doc:"b", i:0};
+const $ = id => document.getElementById(id);
+function showPage(){
+  const d = DOCS[V.doc], n = d.pages[V.i];
+  $("v-img").src = "../public/pages/" + V.doc + "-" + String(n).padStart(d.pad,"0") + ".jpg";
+  $("v-img").alt = d.name + ", página " + n;
+  $("v-title").textContent = d.name;
+  $("v-sub").textContent = "página " + n + " de " + d.total + (V.label ? " · aberto em " + V.label : "");
+  $("v-prev").disabled = V.i === 0 || d.pages[V.i-1] !== n-1;
+  $("v-next").disabled = V.i === d.pages.length-1 || d.pages[V.i+1] !== n+1;
+  document.querySelector("#viewer .scroll").scrollTop = 0;
+}
+function openPage(doc, page, label){
+  const i = DOCS[doc].pages.indexOf(page);
+  if (i < 0) return;
+  V.doc = doc; V.i = i; V.label = label;
+  $("viewer").classList.add("open"); showPage(); $("v-close").focus();
+}
+function closeViewer(){ $("viewer").classList.remove("open"); }
+$("v-prev").addEventListener("click",()=>{V.i--; showPage();});
+$("v-next").addEventListener("click",()=>{V.i++; showPage();});
+$("v-close").addEventListener("click",closeViewer);
+$("viewer").addEventListener("click",e=>{ if(e.target.id==="viewer") closeViewer(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeViewer(); });
+
+function linkify(root){
+  root.querySelectorAll(".ref").forEach(el=>{
+    if (el.dataset.done || el.closest(".refkey")) return;
+    el.dataset.done = "1";
+    const doc = el.closest(".old") ? "a" : "b";
+    const d = DOCS[doc];
+    let html = el.innerHTML;
+    html = html.replace(/Art\. (\d+)(º?)/g,(all,n,o)=>{
+      const p = d.arts[n];
+      return p ? '<button type="button" class="art" data-doc="'+doc+'" data-page="'+p+'" data-label="Art. '+n+o+'" title="Abrir '+d.tag.toLowerCase()+', página '+p+'">'+all+'</button>' : all;
+    });
+    html = html.replace(/Anexo II/g, all => d.an2 ? '<button type="button" class="art" data-doc="'+doc+'" data-page="'+d.an2+'" data-label="Anexo II">'+all+'</button>' : all);
+    html = html.replace(/Parecer, Seção 5/g, all => '<button type="button" class="art" data-doc="'+doc+'" data-page="'+d.sec5+'" data-label="Seção 5 do parecer">'+all+'</button>');
+    el.innerHTML = '<span class="src">'+d.tag+'</span>' + html;
+  });
+}
+document.addEventListener("click",e=>{
+  const b = e.target.closest("button.art");
+  if (b) openPage(b.dataset.doc, Number(b.dataset.page), b.dataset.label);
+});
+const RULES = [
+  {s:"no",t:"Sala de aula",w:"Substituir o professor por sistema automatizado",h:"Também é vedado transferir a responsabilidade pedagógica para a IA.",r:"Art. 4º, §1º, III · Art. 14"},
+  {s:"no",t:"Sala de aula",w:"Crianças da Educação Infantil usando qualquer sistema de IA",h:"Vedado mesmo com mediação de profissionais.",r:"Art. 21, §1º"},
+  {s:"no",t:"Sala de aula",w:"Aluno do 1º ao 5º ano com acesso direto, autônomo, individual ou não supervisionado a IA",h:"",r:"Art. 22, §1º"},
+  {s:"no",t:"Sala de aula",w:"Aluno do 1º ao 5º ano interagindo com IA generativa ou conversacional",h:"Vedado mesmo sob supervisão de profissionais.",r:"Art. 22, §2º"},
+  {s:"no",t:"Sala de aula",w:"Aluno do 6º ao 9º ano usando IA generativa de forma direta, autônoma, individual ou sem supervisão",h:"",r:"Art. 23, par. único"},
+  {s:"no",t:"Avaliação",w:"Nota, conceito ou mérito em redação ou questão dissertativa atribuídos só pela IA",h:"Ou sem a correção humana com leitura integral do texto.",r:"Art. 41, IX"},
+  {s:"no",t:"Avaliação",w:"Punir aluno só com base em detector de texto de IA",h:"Sanção acadêmica ou disciplinar não pode se apoiar exclusivamente no resultado da ferramenta.",r:"Art. 41, X"},
+  {s:"no",t:"Avaliação",w:"Decisão 100% automatizada sobre aprovação, retenção, certificação, seleção, benefício ou sanção",h:"Essas decisões ficam com profissional ou instância competente, com fundamentação e registro.",r:"Art. 41, V · Art. 40, §3º"},
+  {s:"no",t:"Vigilância",w:"Reconhecer ou inferir emoções de alunos e profissionais",h:"Exceções: tecnologia assistiva só para acessibilidade, com consentimento, e pesquisa aprovada por comitê de ética. Sem efeito avaliativo, disciplinar ou seletivo.",r:"Art. 41, II e §2º"},
+  {s:"no",t:"Vigilância",w:"Vigilância biométrica contínua ou monitoramento permanente dos alunos",h:"Verificação pontual de identidade é outra coisa e pode ser admitida.",r:"Art. 41, VI"},
+  {s:"no",t:"Vigilância",w:"Sistemas de pontuação social",h:"",r:"Art. 41, I"},
+  {s:"no",t:"Vigilância",w:"Perfil psicológico, biométrico ou comportamental para classificar, disciplinar, vender ou restringir oportunidades",h:"",r:"Art. 41, IV"},
+  {s:"no",t:"Dados",w:"Usar dados educacionais para publicidade direcionada, perfilização mercadológica ou exploração comercial",h:"Vale para dados de estudantes e de docentes, em qualquer etapa.",r:"Art. 16 · Art. 24 · Art. 41, VII"},
+  {s:"no",t:"Dados",w:"Treinar modelos de IA de terceiros com conteúdos ou dados de crianças e adolescentes",h:"Vedação absoluta: não admite autorização.",r:"Art. 15, par. único · Art. 41, XI"},
+  {s:"no",t:"Dados",w:"Explorar vulnerabilidades etárias, emocionais, socioeconômicas, cognitivas ou comportamentais dos alunos",h:"",r:"Art. 41, III"},
+  {s:"no",t:"Gestão",w:"Segregar, discriminar ou excluir alunos com base em inferências automatizadas",h:"Sobre capacidade, comportamento, vulnerabilidade ou desempenho.",r:"Art. 41, VIII"},
+  {s:"warn",t:"Sala de aula",w:"Recursos de IA não generativa com turmas do 1º ao 5º ano",h:"Só em atividade planejada, conduzida e mediada pelo profissional, com comunicação às famílias e proteção de dados.",r:"Art. 22, caput e §4º"},
+  {s:"warn",t:"Sala de aula",w:"IA generativa com turmas do 6º ao 9º ano",h:"Apenas em atividades pedagógicas com mediação de profissionais da educação.",r:"Art. 23"},
+  {s:"warn",t:"Sala de aula",w:"Tutores de IA e apoio pedagógico automatizado",h:"Risco moderado: comunicar, registrar, revisar com olhar humano as recomendações, monitorar vieses e oferecer canal de contestação. Respeitadas as restrições de cada etapa.",r:"Art. 39"},
+  {s:"warn",t:"Sala de aula",w:"Ferramentas de apoio à escrita, pesquisa e organização de estudos em contexto pedagógico",h:"Risco moderado. O aluno responde pelo conteúdo e deve ser transparente sobre o uso.",r:"Art. 39, §1º, IV · Art. 10"},
+  {s:"warn",t:"Sala de aula",w:"Plataformas adaptativas, trilhas personalizadas e recomendações",h:"Risco moderado enquanto não tiverem efeito automático sobre nota, progressão ou benefício. Se passarem a ter, sobem para alto risco.",r:"Art. 39, §1º, V e VI · Art. 40, §1º, VIII"},
+  {s:"warn",t:"Avaliação",w:"Pré-correção de redação e questão dissertativa por IA",h:"Alto risco. Só como etapa preparatória: o professor lê o texto inteiro e atribui a nota; vedadas validação em bloco e mera ratificação da sugestão.",r:"Art. 40, §1º, X e §4º"},
+  {s:"warn",t:"Avaliação",w:"Feedback formativo gerado por IA",h:"Risco moderado se não houver repercussão acadêmica direta.",r:"Art. 39, §1º, II"},
+  {s:"warn",t:"Avaliação",w:"Apoio automatizado à correção de prova objetiva que vale nota",h:"Alto risco. Só como instrumento auxiliar: nenhuma nota ou aprovação sem validação humana prévia, qualificada e documentada.",r:"Art. 40, §1º, I"},
+  {s:"warn",t:"Avaliação",w:"Detectores de conteúdo gerado por IA",h:"Alto risco quando houver possível repercussão acadêmica ou disciplinar. Admitidos apenas como elemento auxiliar de análise.",r:"Art. 40, §1º, IX"},
+  {s:"warn",t:"Vigilância",w:"Proctoring e monitoramento em avaliações",h:"Alto risco: avaliação de impacto, supervisão humana documentada e preferência pela alternativa menos invasiva.",r:"Art. 40, §1º, II e §2º, IX"},
+  {s:"warn",t:"Vigilância",w:"Verificação pontual de identidade",h:"Quando estritamente necessária para acesso a ambiente virtual ou avaliação, com finalidade, necessidade e proporcionalidade.",r:"Art. 41, §1º"},
+  {s:"warn",t:"Gestão",w:"Prever evasão, desempenho ou conduta de alunos individualmente",h:"Alto risco, com todas as salvaguardas reforçadas.",r:"Art. 40, §1º, III e VI"},
+  {s:"warn",t:"Dados",w:"Tratar dados sensíveis: deficiência, saúde, biometria, comportamento, vulnerabilidade social",h:"Alto risco. Relatório de impacto à proteção de dados quando aplicável.",r:"Art. 40, §1º, V"},
+  {s:"warn",t:"Dados",w:"Treinar modelos de terceiros com conteúdo de professores ou de estudantes adultos",h:"Só com autorização específica e revogável.",r:"Art. 15 · Art. 39, §2º, V"},
+  {s:"warn",t:"Gestão",w:"Assistentes institucionais de atendimento e orientação",h:"Risco moderado.",r:"Art. 39, §1º, III"},
+  {s:"warn",t:"Acessibilidade",w:"Recursos de acessibilidade com personalização individual",h:"Risco moderado se não envolverem dados sensíveis nem decisão automatizada relevante.",r:"Art. 39, §1º, VII"},
+  {s:"ok",t:"Sala de aula",w:"Professores da Educação Infantil usarem IA para planejamento e gestão pedagógica",h:"O uso é do profissional, não da criança.",r:"Art. 21"},
+  {s:"ok",t:"Sala de aula",w:"IA como apoio complementar ao trabalho do professor",h:"Para diversificar estratégias, acompanhar aprendizagens, personalizar experiências e organizar atividades, com intencionalidade pedagógica clara.",r:"Art. 8º"},
+  {s:"ok",t:"Sala de aula",w:"Ensinar sobre IA e ensinar com IA",h:"A IA pode ser objeto de aprendizagem e recurso pedagógico, respeitadas as restrições de cada etapa.",r:"Art. 19, §1º"},
+  {s:"ok",t:"Sala de aula",w:"Elaborar, organizar ou adaptar materiais didáticos com IA",h:"Baixo risco. O uso deve ser informado de forma clara e o autor responde pelo conteúdo.",r:"Art. 38, §1º, I · Art. 14, §2º"},
+  {s:"ok",t:"Gestão",w:"Ferramentas de apoio ao planejamento pedagógico ou administrativo",h:"Baixo risco.",r:"Art. 38, §1º, II"},
+  {s:"ok",t:"Sala de aula",w:"Revisão de texto sem caráter avaliativo",h:"Baixo risco.",r:"Art. 38, §1º, III"},
+  {s:"ok",t:"Sala de aula",w:"Tradução, resumo, formatação e adequação de conteúdos",h:"Baixo risco.",r:"Art. 38, §1º, IV"},
+  {s:"ok",t:"Acessibilidade",w:"Transcrição, legendagem, leitor de tela, ampliação de texto, conversão de formato",h:"Baixo risco, desde que sem inferência sensível ou perfil individual.",r:"Art. 38, §1º, V"},
+  {s:"ok",t:"Acessibilidade",w:"Tecnologia assistiva voltada só a inclusão e eliminação de barreiras",h:"Fica fora das restrições dos Anos Iniciais e das restrições à perfilização, respeitados proteção de dados e supervisão humana.",r:"Art. 22, §5º · Art. 36, §3º"}
+];
+const LABEL = {ok:"PERMITIDO", warn:"COM CONDIÇÕES", no:"PROIBIDO"};
+const ORDER = ["no","warn","ok"];
+const state = {s:"all", t:"all"};
+
+function esc(x){return x.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+function chips(hostId, key, options){
+  const host = document.getElementById(hostId);
+  options.forEach(([val,text,n])=>{
+    const b = document.createElement("button");
+    b.type="button"; b.className="chip"; b.dataset.val=val;
+    b.setAttribute("aria-pressed", String(state[key]===val));
+    b.innerHTML = esc(text) + '<span class="n">'+n+'</span>';
+    b.addEventListener("click",()=>{
+      state[key]=val;
+      host.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed", String(c.dataset.val===val)));
+      render();
+    });
+    host.appendChild(b);
+  });
+}
+
+function render(){
+  const list = RULES
+    .filter(x=>(state.s==="all"||x.s===state.s)&&(state.t==="all"||x.t===state.t))
+    .sort((a,b)=>ORDER.indexOf(a.s)-ORDER.indexOf(b.s));
+  document.getElementById("rules").innerHTML = list.map(x=>
+    '<li class="rule '+x.s+'"><span class="mark '+x.s+'">'+LABEL[x.s]+'</span>'+
+    '<div><div class="what">'+esc(x.w)+'</div>'+(x.h?'<div class="how">'+esc(x.h)+'</div>':'')+
+    '<div class="theme">'+esc(x.t)+'</div></div>'+
+    '<span class="ref">'+esc(x.r)+'</span></li>').join("");
+  linkify(document.getElementById("rules"));
+  document.getElementById("count").textContent =
+    list.length ? "Mostrando "+list.length+" de "+RULES.length+" regras." : "Nenhuma regra com essa combinação de filtros.";
+}
+
+const cnt = (k,v)=>RULES.filter(x=>x[k]===v).length;
+chips("f-status","s",[["all","Todas",RULES.length],["no","Proibido",cnt("s","no")],["warn","Com condições",cnt("s","warn")],["ok","Permitido",cnt("s","ok")]]);
+const themes = [...new Set(RULES.map(x=>x.t))];
+chips("f-theme","t",[["all","Todos",RULES.length],...themes.map(t=>[t,t,cnt("t",t)])]);
+render();
+
+(function(){
+  const host=document.getElementById("f-conc"), rows=[...document.querySelectorAll("#conc .crow")];
+  const opts=[["all","Todos"],["ALT","Conteúdo mudou"],["NOVO","Novo"],["RED","Só redação"],["IGUAL","Igual"]];
+  opts.forEach(([v,t])=>{
+    const n=v==="all"?rows.length:rows.filter(r=>r.dataset.s===v).length;
+    const b=document.createElement("button"); b.type="button"; b.className="chip"; b.dataset.val=v;
+    b.setAttribute("aria-pressed",String(v==="all")); b.innerHTML=t+'<span class="n">'+n+'</span>';
+    b.addEventListener("click",()=>{
+      host.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)));
+      rows.forEach(r=>{r.style.display=(v==="all"||r.dataset.s===v)?"":"none";});
+    });
+    host.appendChild(b);
+  });
+})();
+linkify(document);
+</script>
+</body>
+</html>

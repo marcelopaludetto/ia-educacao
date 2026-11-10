@@ -1,0 +1,39 @@
+---
+/**
+ * Referência a artigo(s). Cada "Art. N" vira link para a imagem da página do
+ * PDF; com JS, o link abre o visor em vez de navegar.
+ */
+import { DOCS, pageFile, type DocId } from '../data/docs';
+import { parseRef } from '../lib/refs';
+
+interface Props {
+  text: string;
+  doc?: DocId;
+  /** Mostra o selo HOMOLOGADO/MINUTA antes do texto. */
+  tag?: boolean;
+  class?: string;
+}
+const { text, doc = 'b', tag = true, class: cls } = Astro.props;
+const d = DOCS[doc];
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const segs = parseRef(text, doc);
+---
+<span class:list={['ref', cls]}>{tag && <span class="src">{d.tag}</span>}{segs.map((s) =>
+  s.kind === 'text'
+    ? s.value
+    : <a
+        class="art"
+        href={base + pageFile(doc, s.page)}
+        data-doc={doc}
+        data-page={s.page}
+        data-label={s.label}
+        title={`Abrir ${d.tag.toLowerCase()}, página ${s.page}`}
+      >{s.value}</a>
+)}</span>
+
+<style>
+  .ref { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); line-height: 1.5; }
+  .src { font-size: .64rem; letter-spacing: .03em; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; margin-right: 6px; color: var(--muted); white-space: nowrap; }
+  .art { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); white-space: nowrap; }
+  .art:hover { background: var(--accent-soft); border-bottom-style: solid; }
+</style>
