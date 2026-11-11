@@ -27,12 +27,10 @@ npm run preview   # serve dist/ localmente
 As referências tipo `"Art. 40, §4º · Art. 41, IX"` viram links automaticamente no build
 (`src/lib/refs.ts`): cada artigo abre a página correspondente do PDF.
 
-## Deploy no GitHub Pages
+## Deploy na Vercel
 
-1. Crie um repositório no GitHub e envie este projeto para a branch `main`.
-2. Em **Settings → Pages → Build and deployment**, escolha **Source: GitHub Actions**.
-3. Cada push na `main` roda `.github/workflows/deploy.yml`, que publica em
-   `https://<usuario>.github.io/<repositorio>/`. O caminho base é configurado sozinho.
+1. Em vercel.com/new, importe este repositório (a Vercel detecta Astro sozinha).
+2. Cada push na `main` publica em produção; outras branches e PRs ganham URL de prévia.
 
 ## Versão antiga
 
