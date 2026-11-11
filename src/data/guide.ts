@@ -203,14 +203,14 @@ export const NAV = [
     { id: 'resumo', label: 'Resumo' },
     { id: 'etapas', label: 'Por etapa' },
     { id: 'regras', label: 'Pode ou não pode' },
-    { id: 'risco', label: 'Níveis de risco' },
+    { id: 'risco', label: 'Risco' },
     { id: 'curriculo', label: 'Currículo' },
-    { id: 'escola', label: 'Deveres da escola' },
-    { id: 'atencao', label: 'Pontos de atenção' },
+    { id: 'escola', label: 'Escola' },
+    { id: 'atencao', label: 'Atenção' },
   ] },
   { group: 'Comparação', items: [
     { id: 'mudancas', label: 'O que mudou' },
-    { id: 'concordancia', label: 'Artigo por artigo' },
+    { id: 'concordancia', label: 'Por artigo' },
   ] },
   { group: 'Referência', items: [
     { id: 'termos', label: 'Termos' },

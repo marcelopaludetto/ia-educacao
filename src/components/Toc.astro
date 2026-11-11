@@ -3,6 +3,7 @@ import { NAV } from '../data/guide';
 ---
 <nav class="toc" aria-label="Seções do guia">
   <div class="wrap bar">
+    <button type="button" class="scroller js-only" data-dir="-1" aria-label="Rolar menu para a esquerda" tabindex="-1" hidden>‹</button>
     <div class="links" data-toc>
       {NAV.map((g, gi) => (
         <>
@@ -11,6 +12,7 @@ import { NAV } from '../data/guide';
         </>
       ))}
     </div>
+    <button type="button" class="scroller js-only" data-dir="1" aria-label="Rolar menu para a direita" tabindex="-1" hidden>›</button>
     <button type="button" class="theme-toggle js-only" data-theme-toggle aria-label="Tema: automático">
       <svg class="i-auto" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"></path></svg>
       <svg class="i-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
@@ -22,13 +24,18 @@ import { NAV } from '../data/guide';
 
 <style>
   .toc { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--line); }
-  .bar { display: flex; align-items: center; gap: 8px; min-height: var(--nav-h); }
-  .links { flex: 1; display: flex; align-items: center; gap: 2px; overflow-x: auto; scrollbar-width: none; padding: 8px 0; mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+  .bar { display: flex; align-items: center; gap: 4px; min-height: var(--nav-h); max-width: 1180px; }
+  .links { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1px; overflow-x: auto; scrollbar-width: none; padding: 8px 0; --fl: 0px; --fr: 0px; mask-image: linear-gradient(to right, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); }
+  /* Esmaece só o lado que tem itens escondidos. */
+  .links.more-l { --fl: 28px; }
+  .links.more-r { --fr: 28px; }
+  .scroller { flex: none; width: 28px; height: 32px; border: 0; border-radius: 6px; background: none; color: var(--muted); font-size: 1.3rem; line-height: 1; cursor: pointer; }
+  .scroller:hover { background: var(--surface-2); color: var(--ink); }
   .links::-webkit-scrollbar { display: none; }
-  .links a { flex: none; text-decoration: none; color: var(--muted); font-size: .9rem; font-weight: 500; padding: 6px 10px; border-radius: 6px; transition: background-color .15s, color .15s; }
+  .links a { flex: none; text-decoration: none; color: var(--muted); font-size: .88rem; font-weight: 500; padding: 6px 9px; border-radius: 6px; transition: background-color .15s, color .15s; }
   .links a:hover { background: var(--surface-2); color: var(--ink); }
   .links a[aria-current="true"] { background: var(--accent-soft); color: var(--accent); }
-  .sep { flex: none; width: 1px; height: 18px; background: var(--line); margin: 0 6px; }
+  .sep { flex: none; width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
 
   .theme-toggle { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
   .theme-toggle:hover { color: var(--ink); border-color: var(--accent); }
@@ -87,6 +94,25 @@ import { NAV } from '../data/guide';
     raf = requestAnimationFrame(onScroll);
   }, { passive: true });
   onScroll();
+
+  // Setas e esmaecido aparecem só quando a barra não cabe.
+  const bar = document.querySelector<HTMLElement>('[data-toc]')!;
+  const [left, right] = [...document.querySelectorAll<HTMLButtonElement>('.toc .scroller')];
+  function edges() {
+    const l = bar.scrollLeft > 2;
+    const r = bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2;
+    bar.classList.toggle('more-l', l);
+    bar.classList.toggle('more-r', r);
+    left.hidden = !l;
+    right.hidden = !r;
+  }
+  for (const b of [left, right]) {
+    b.addEventListener('click', () => bar.scrollBy({ left: Number(b.dataset.dir) * bar.clientWidth * 0.7, behavior: 'smooth' }));
+  }
+  bar.addEventListener('scroll', edges, { passive: true });
+  addEventListener('resize', edges);
+  new ResizeObserver(edges).observe(bar);
+  edges();
 
   // Tema: automático → claro → escuro.
   const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');

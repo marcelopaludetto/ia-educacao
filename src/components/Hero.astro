@@ -1,4 +1,5 @@
 ---
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const paths = [
   { href: '#etapas', who: 'Professor(a)', what: 'O que posso fazer com a minha turma' },
   { href: '#regras', who: 'Dúvida pontual', what: 'Buscar se um uso é permitido ou proibido' },
@@ -30,9 +31,9 @@ const paths = [
     <details class="refkey">
       <summary>Como ler as referências aos artigos</summary>
       <div class="body">
-        <p>Cada artigo citado é um link: abre a imagem da página correspondente do PDF de origem, para você conferir o texto original.</p>
-        <p><span class="src">HOMOLOGADO</span> Parecer CNE/CP 15/2026 com o Projeto de Resolução (65 páginas), arquivo gerado em 06/10/2026. É a referência de todo o guia.</p>
-        <p><span class="src">MINUTA</span> Versão anterior, processo SEI 23001.000335/2025-80 (107 páginas), arquivo gerado em 28/08/2026, antes da votação de 1º/9. Aparece só nas colunas de comparação.</p>
+        <p>Cada artigo citado é um link: abre o PDF de origem já na página correspondente, para você conferir o texto original.</p>
+        <p><span class="src">HOMOLOGADO</span> Parecer CNE/CP 15/2026 com o Projeto de Resolução (65 páginas), arquivo gerado em 06/10/2026. É a referência de todo o guia. <a href={`${base}pdfs/parecer-homologado.pdf`} target="_blank" rel="noopener">Abrir PDF</a></p>
+        <p><span class="src">MINUTA</span> Versão anterior, processo SEI 23001.000335/2025-80 (107 páginas), arquivo gerado em 28/08/2026, antes da votação de 1º/9. Aparece só nas colunas de comparação. <a href={`${base}pdfs/minuta.pdf`} target="_blank" rel="noopener">Abrir PDF</a></p>
       </div>
     </details>
   </div>

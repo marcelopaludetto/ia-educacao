@@ -1,11 +1,15 @@
 ---
 /**
- * Visor das páginas dos PDFs. Os links .art funcionam sem JS (abrem a imagem);
- * com JS, abrem este <dialog> com navegação, zoom e atalhos de teclado.
+ * Visor de PDF em modal. Os links .art apontam para "arquivo.pdf#page=N" e
+ * funcionam sem JS (ou com Ctrl/Cmd+clique, em nova aba); com JS, abrem aqui.
+ * O PDF.js só é baixado no primeiro clique.
  */
 import { DOCS } from '../data/docs';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const data = { base, docs: DOCS };
+const data = {
+  base,
+  docs: Object.fromEntries(Object.values(DOCS).map((d) => [d.id, { name: d.name, total: d.total, file: d.file }])),
+};
 ---
 <dialog id="viewer" aria-labelledby="v-title">
   <div class="box">
@@ -16,15 +20,21 @@ const data = { base, docs: DOCS };
       </div>
       <div class="actions">
         <button type="button" id="v-prev" aria-label="Página anterior" title="Página anterior (←)">←</button>
+        <label class="pg">
+          <span class="visually-hidden">Ir para a página</span>
+          <input id="v-page" type="number" inputmode="numeric" min="1" />
+          <span id="v-total"></span>
+        </label>
         <button type="button" id="v-next" aria-label="Próxima página" title="Próxima página (→)">→</button>
         <button type="button" id="v-zoom" aria-pressed="false" title="Ampliar (Z)">Ampliar</button>
-        <a id="v-open" target="_blank" rel="noopener" title="Abrir a imagem em nova aba">Nova aba</a>
+        <a id="v-open" target="_blank" rel="noopener" title="Abrir o PDF em nova aba">Nova aba</a>
         <button type="button" id="v-close" class="close" title="Fechar (Esc)">Fechar</button>
       </div>
     </div>
     <div class="scroll" id="v-scroll">
-      <div class="loading" id="v-loading" aria-hidden="true"></div>
-      <img id="v-img" alt="" decoding="async" />
+      <div class="loading" aria-hidden="true"></div>
+      <p class="err" id="v-err" hidden>Não foi possível carregar o PDF. <a id="v-err-link" target="_blank" rel="noopener">Abrir em nova aba</a></p>
+      <canvas id="v-canvas" role="img"></canvas>
     </div>
   </div>
 </dialog>
@@ -39,29 +49,37 @@ const data = { base, docs: DOCS };
   .t { flex: 1; min-width: 200px; font-size: .9rem; }
   .t b { font-family: var(--font-display); display: block; }
   .t span { color: var(--muted); font-family: var(--font-mono); font-size: .76rem; }
-  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .actions button, .actions a { font: inherit; font-size: .88rem; font-weight: 500; cursor: pointer; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; min-height: 36px; text-decoration: none; display: inline-flex; align-items: center; }
   .actions button:hover:not(:disabled), .actions a:hover { border-color: var(--accent); }
   .actions button:disabled { opacity: .4; cursor: default; }
   .actions [aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
   .actions .close { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .pg { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: .82rem; color: var(--muted); }
+  .pg input { width: 3.6em; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px; min-height: 36px; text-align: center; -moz-appearance: textfield; }
+  .pg input::-webkit-inner-spin-button, .pg input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   .scroll { position: relative; overflow: auto; flex: 1; background: var(--surface-2); padding: 12px; text-align: center; overscroll-behavior: contain; }
-  img { max-width: 100%; height: auto; background: #fff; box-shadow: 0 1px 6px rgb(0 0 0 / .25); cursor: zoom-in; transition: opacity .15s; }
-  .scroll.zoom img { max-width: none; width: 160%; cursor: zoom-out; }
-  .scroll.busy img { opacity: .35; }
+  canvas { display: inline-block; max-width: none; background: #fff; box-shadow: 0 1px 6px rgb(0 0 0 / .25); cursor: zoom-in; transition: opacity .15s; }
+  .scroll.zoom canvas { cursor: zoom-out; }
+  .scroll.busy canvas { opacity: .35; }
   .loading { position: absolute; top: 40px; left: 50%; width: 28px; height: 28px; margin-left: -14px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; display: none; z-index: 1; }
   .scroll.busy .loading { display: block; }
+  .err { margin: 40px auto; color: var(--muted); }
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (max-width: 560px) {
     dialog { width: 100vw; height: 100dvh; }
     .box { border-radius: 0; }
     .t { min-width: 100%; }
     #v-open { display: none; }
+    .scroll { padding: 6px; }
   }
 </style>
 
 <script>
-  type Doc = { name: string; tag: string; total: number; pad: number; pages: number[] };
+  import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+  import type { PDFDocumentProxy, RenderTask } from 'pdfjs-dist';
+
+  type Doc = { name: string; total: number; file: string };
   const { base, docs } = JSON.parse(document.getElementById('viewer-data')!.textContent!) as {
     base: string;
     docs: Record<string, Doc>;
@@ -69,52 +87,178 @@ const data = { base, docs: DOCS };
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const dlg = $<HTMLDialogElement>('viewer');
-  const img = $<HTMLImageElement>('v-img');
+  const canvas = $<HTMLCanvasElement>('v-canvas');
   const scroll = $('v-scroll');
   const prev = $<HTMLButtonElement>('v-prev');
   const next = $<HTMLButtonElement>('v-next');
-  const zoom = $<HTMLButtonElement>('v-zoom');
-  const open = $<HTMLAnchorElement>('v-open');
+  const zoomBtn = $<HTMLButtonElement>('v-zoom');
+  const openLink = $<HTMLAnchorElement>('v-open');
+  const pageInput = $<HTMLInputElement>('v-page');
+  const err = $('v-err');
 
-  const V = { doc: 'b', i: 0, label: '' };
-  const src = (doc: string, n: number) => `${base}pages/${doc}-${String(n).padStart(docs[doc].pad, '0')}.jpg`;
+  const V = {
+    doc: 'b', page: 1, label: '', zoom: false,
+    /** Artigo a destacar e página onde o link apontou. */
+    art: 0, artPage: 0, scrollToHl: false,
+  };
 
-  function setZoom(on: boolean) {
-    scroll.classList.toggle('zoom', on);
-    zoom.setAttribute('aria-pressed', String(on));
-    zoom.textContent = on ? 'Ajustar' : 'Ampliar';
+  type Item = { str: string; transform: number[]; width: number; height: number; hasEOL?: boolean };
+  /** Páginas em que o artigo destacado já terminou (doc:art → página do fim). */
+  const artEnd = new Map<string, number>();
+
+  /**
+   * Pinta de amarelo o artigo V.art na página: da linha que começa com
+   * "Art. N" até a que começa com "Art. N+1". Se a página é a seguinte à do
+   * link e o artigo ainda não terminou, o destaque começa no topo.
+   * Devolve o y (px do canvas) do início do destaque, ou null.
+   */
+  async function highlight(page: import('pdfjs-dist').PDFPageProxy, vp: import('pdfjs-dist').PageViewport, off: HTMLCanvasElement) {
+    if (!V.art || !pdfjs) return null;
+    const key = `${V.doc}:${V.art}`;
+    const isStart = V.page === V.artPage;
+    const isCont = V.page > V.artPage && (artEnd.get(key) ?? Infinity) >= V.page && V.page <= V.artPage + 2;
+    if (!isStart && !isCont) return null;
+
+    const tc = await page.getTextContent();
+    // Ignora cabeçalho ("PROCESSO Nº…") e rodapé (número da página): faixas de 9% e 6% da altura.
+    const [, y0, , y1] = page.view;
+    const ph = y1 - y0;
+    const items = (tc.items as Item[]).filter((i) =>
+      'str' in i && i.str.trim() !== '' && i.transform[5] < y1 - ph * 0.09 && i.transform[5] > y0 + ph * 0.06);
+    // Texto de cada linha, para achar onde a linha começa com "Art. N".
+    const lineStart = items.map((_, k) => k === 0 || !!items[k - 1].hasEOL || Math.abs(items[k - 1].transform[5] - items[k].transform[5]) > 2);
+    const lineText = (k: number) => {
+      let s = '';
+      for (let j = k; j < items.length; j++) { if (j > k && lineStart[j]) break; s += items[j].str; }
+      return s;
+    };
+    const heading = (n: number) => new RegExp(`^\\s*Art\\.?\\s*${n}\\s*[º°o]?(?!\\d)`);
+    let from = isStart ? -1 : 0;
+    let to = items.length;
+    for (let k = 0; k < items.length; k++) {
+      if (!lineStart[k]) continue;
+      const t = lineText(k);
+      if (from < 0 && heading(V.art).test(t)) { from = k; continue; }
+      if (from >= 0 && heading(V.art + 1).test(t)) { to = k; break; }
+    }
+    if (from < 0) return null;
+    if (to < items.length) artEnd.set(key, V.page);
+
+    const ctx = off.getContext('2d')!;
+    ctx.save();
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = 'rgba(255, 214, 0, .45)';
+    let firstY: number | null = null;
+    const pad = 2 * (vp.scale / 1.5);
+    for (let k = from; k < to; k++) {
+      const it = items[k];
+      const m = pdfjs.Util.transform(vp.transform, it.transform);
+      const h = Math.hypot(m[2], m[3]);
+      const w = it.width * vp.scale;
+      const x = m[4];
+      const y = m[5] - h;
+      ctx.fillRect(x - pad, y - pad, w + pad * 2, h + pad * 2);
+      if (firstY === null || y < firstY) firstY = y;
+    }
+    ctx.restore();
+    return firstY;
+  }
+  const loaded = new Map<string, Promise<PDFDocumentProxy>>();
+  let pdfjs: typeof import('pdfjs-dist') | undefined;
+  let task: RenderTask | undefined;
+  let seq = 0;
+
+  const url = (doc: string) => base + docs[doc].file;
+
+  async function getDoc(doc: string) {
+    if (!pdfjs) {
+      pdfjs = await import('pdfjs-dist');
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+    }
+    if (!loaded.has(doc)) {
+      const p = pdfjs.getDocument({ url: url(doc) }).promise;
+      p.catch(() => loaded.delete(doc));
+      loaded.set(doc, p);
+    }
+    return loaded.get(doc)!;
   }
 
-  function show() {
+  function paintBar() {
     const d = docs[V.doc];
-    const n = d.pages[V.i];
-    const url = src(V.doc, n);
-    scroll.classList.add('busy');
-    img.src = url;
-    img.alt = `${d.name}, página ${n}`;
-    open.href = url;
     $('v-title').textContent = d.name;
-    $('v-sub').textContent = `página ${n} de ${d.total}` + (V.label ? ` · aberto em ${V.label}` : '');
-    // Só navega entre páginas contíguas que existem como imagem.
-    prev.disabled = V.i === 0 || d.pages[V.i - 1] !== n - 1;
-    next.disabled = V.i === d.pages.length - 1 || d.pages[V.i + 1] !== n + 1;
-    scroll.scrollTo(0, 0);
-    // Pré-carrega as vizinhas.
-    for (const j of [V.i - 1, V.i + 1]) {
-      if (d.pages[j] !== undefined) new Image().src = src(V.doc, d.pages[j]);
+    $('v-sub').textContent = V.label ? `aberto em ${V.label}` : '';
+    $('v-total').textContent = `/ ${d.total}`;
+    pageInput.max = String(d.total);
+    pageInput.value = String(V.page);
+    prev.disabled = V.page <= 1;
+    next.disabled = V.page >= d.total;
+    openLink.href = `${url(V.doc)}#page=${V.page}`;
+    zoomBtn.setAttribute('aria-pressed', String(V.zoom));
+    zoomBtn.textContent = V.zoom ? 'Ajustar' : 'Ampliar';
+    scroll.classList.toggle('zoom', V.zoom);
+  }
+
+  async function render() {
+    const my = ++seq;
+    paintBar();
+    err.hidden = true;
+    canvas.hidden = false;
+    scroll.classList.add('busy');
+    try {
+      const pdf = await getDoc(V.doc);
+      const page = await pdf.getPage(V.page);
+      if (my !== seq) return;
+      task?.cancel();
+      const raw = page.getViewport({ scale: 1 });
+      const avail = scroll.clientWidth - 24;
+      const cssScale = (avail / raw.width) * (V.zoom ? 1.6 : 1);
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      const vp = page.getViewport({ scale: cssScale * dpr });
+      // Desenha num canvas fora da tela e só troca no fim, para não piscar.
+      const off = document.createElement('canvas');
+      off.width = Math.floor(vp.width);
+      off.height = Math.floor(vp.height);
+      task = page.render({ canvas: off, viewport: vp });
+      await task.promise;
+      if (my !== seq) return;
+      const top = await highlight(page, vp, off);
+      if (my !== seq) return;
+      canvas.width = off.width;
+      canvas.height = off.height;
+      canvas.getContext('2d')!.drawImage(off, 0, 0);
+      canvas.style.width = `${Math.floor(vp.width / dpr)}px`;
+      canvas.style.height = `${Math.floor(vp.height / dpr)}px`;
+      if (top !== null && V.scrollToHl) {
+        V.scrollToHl = false;
+        scroll.scrollTo({ top: Math.max(0, top / dpr - 48) });
+      }
+      canvas.setAttribute('aria-label', `${docs[V.doc].name}, página ${V.page}`);
+      scroll.classList.remove('busy');
+    } catch (e: unknown) {
+      if (my !== seq || (e as { name?: string })?.name === 'RenderingCancelledException') return;
+      scroll.classList.remove('busy');
+      canvas.hidden = true;
+      err.hidden = false;
+      $<HTMLAnchorElement>('v-err-link').href = `${url(V.doc)}#page=${V.page}`;
     }
   }
 
-  img.addEventListener('load', () => scroll.classList.remove('busy'));
-  img.addEventListener('error', () => scroll.classList.remove('busy'));
+  function go(page: number) {
+    const total = docs[V.doc].total;
+    const p = Math.min(total, Math.max(1, Math.round(page)));
+    if (p === V.page) { paintBar(); return; }
+    V.page = p;
+    scroll.scrollTo(0, 0);
+    render();
+  }
 
   function openPage(doc: string, page: number, label: string) {
-    const i = docs[doc]?.pages.indexOf(page) ?? -1;
-    if (i < 0) return false;
-    Object.assign(V, { doc, i, label });
-    setZoom(false);
-    show();
+    if (!docs[doc]) return false;
+    const art = Number(/^Art\. (\d+)/.exec(label)?.[1] ?? 0);
+    Object.assign(V, { doc, page, label, zoom: false, art, artPage: page, scrollToHl: art > 0 });
     if (!dlg.open) dlg.showModal();
+    scroll.scrollTo(0, 0);
+    render();
     $('v-close').focus();
     return true;
   }
@@ -125,16 +269,26 @@ const data = { base, docs: DOCS };
     if (openPage(a.dataset.doc!, Number(a.dataset.page), a.dataset.label || '')) e.preventDefault();
   });
 
-  prev.addEventListener('click', () => { V.i--; show(); });
-  next.addEventListener('click', () => { V.i++; show(); });
-  zoom.addEventListener('click', () => setZoom(!scroll.classList.contains('zoom')));
-  img.addEventListener('click', () => setZoom(!scroll.classList.contains('zoom')));
+  prev.addEventListener('click', () => go(V.page - 1));
+  next.addEventListener('click', () => go(V.page + 1));
+  pageInput.addEventListener('change', () => go(Number(pageInput.value) || V.page));
+  const toggleZoom = () => { V.zoom = !V.zoom; render(); };
+  zoomBtn.addEventListener('click', toggleZoom);
+  canvas.addEventListener('click', toggleZoom);
   $('v-close').addEventListener('click', () => dlg.close());
-  // Clique fora da caixa fecha.
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('keydown', (e) => {
+    if (e.target === pageInput) return;
     if (e.key === 'ArrowLeft' && !prev.disabled) { e.preventDefault(); prev.click(); }
     else if (e.key === 'ArrowRight' && !next.disabled) { e.preventDefault(); next.click(); }
-    else if (e.key.toLowerCase() === 'z' && !e.metaKey && !e.ctrlKey) zoom.click();
+    else if (e.key.toLowerCase() === 'z' && !e.metaKey && !e.ctrlKey) toggleZoom();
+  });
+
+  // Redesenha ao girar o celular ou redimensionar a janela.
+  let rt: number | undefined;
+  addEventListener('resize', () => {
+    if (!dlg.open) return;
+    clearTimeout(rt);
+    rt = window.setTimeout(render, 150);
   });
 </script>

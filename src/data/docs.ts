@@ -7,10 +7,8 @@ export interface SourceDoc {
   name: string;
   tag: string;
   total: number;
-  /** Zeros à esquerda no nome do arquivo da imagem (a-018.jpg, b-34.jpg). */
-  pad: number;
-  /** Páginas que existem como imagem em public/pages. */
-  pages: number[];
+  /** Arquivo em public/pdfs. */
+  file: string;
   /** Número do artigo → página do PDF. */
   arts: Record<string, number>;
   sec5: number;
@@ -23,8 +21,7 @@ export const DOCS: Record<DocId, SourceDoc> = {
     name: 'Minuta anterior',
     tag: 'MINUTA',
     total: 107,
-    pad: 3,
-    pages: [18, 19, 20, 21, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+    file: 'pdfs/minuta.pdf',
     arts: {
       '1': 37, '2': 38, '3': 39, '4': 39, '5': 40, '6': 41, '7': 41, '8': 42, '9': 43, '10': 43,
       '11': 43, '12': 44, '13': 44, '14': 45, '15': 45, '16': 45, '17': 46, '18': 46, '19': 47, '20': 48,
@@ -38,8 +35,7 @@ export const DOCS: Record<DocId, SourceDoc> = {
     name: 'Parecer CNE/CP 15/2026, texto homologado',
     tag: 'HOMOLOGADO',
     total: 65,
-    pad: 2,
-    pages: [16, 17, 18, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 61, 62, 63],
+    file: 'pdfs/parecer-homologado.pdf',
     arts: {
       '1': 34, '2': 35, '3': 35, '4': 35, '5': 36, '6': 36, '7': 37, '8': 37, '9': 38, '10': 38,
       '11': 38, '12': 38, '13': 39, '14': 39, '15': 39, '16': 39, '17': 40, '18': 40, '19': 41, '20': 41,
@@ -52,6 +48,7 @@ export const DOCS: Record<DocId, SourceDoc> = {
   },
 };
 
-export function pageFile(doc: DocId, page: number): string {
-  return `pages/${doc}-${String(page).padStart(DOCS[doc].pad, '0')}.jpg`;
+/** Link para uma página do PDF (o navegador abre direto nela). */
+export function pdfUrl(doc: DocId, page: number, base: string): string {
+  return `${base}${DOCS[doc].file}#page=${page}`;
 }

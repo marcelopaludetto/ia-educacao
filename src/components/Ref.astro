@@ -1,9 +1,9 @@
 ---
 /**
- * Referência a artigo(s). Cada "Art. N" vira link para a imagem da página do
- * PDF; com JS, o link abre o visor em vez de navegar.
+ * Referência a artigo(s). Cada "Art. N" vira link para a página do PDF de
+ * origem; com JS abre no visor (PageViewer), sem JS em nova aba.
  */
-import { DOCS, pageFile, type DocId } from '../data/docs';
+import { DOCS, pdfUrl, type DocId } from '../data/docs';
 import { parseRef } from '../lib/refs';
 
 interface Props {
@@ -23,7 +23,9 @@ const segs = parseRef(text, doc);
     ? s.value
     : <a
         class="art"
-        href={base + pageFile(doc, s.page)}
+        href={pdfUrl(doc, s.page, base)}
+        target="_blank"
+        rel="noopener"
         data-doc={doc}
         data-page={s.page}
         data-label={s.label}

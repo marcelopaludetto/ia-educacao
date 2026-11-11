@@ -20,7 +20,7 @@ npm run preview   # serve dist/ localmente
 | Concordância artigo por artigo           | `src/data/concordance.ts`          |
 | Etapas, risco, currículo, deveres, termos, menu | `src/data/guide.ts`         |
 | Mapa artigo → página dos PDFs            | `src/data/docs.ts`                 |
-| Imagens das páginas dos PDFs             | `public/pages/`                    |
+| PDFs de origem (nomes fixos)             | `public/pdfs/`                     |
 | Layout e visual de cada seção            | `src/components/*.astro`           |
 | Cores, fontes, tema escuro               | `src/styles/global.css`            |
 

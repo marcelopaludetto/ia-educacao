@@ -26,7 +26,7 @@ export function parseRef(text: string, doc: DocId): RefSegment[] {
       page = d.sec5;
       label = 'Seção 5 do parecer';
     }
-    if (page === undefined || !d.pages.includes(page)) continue;
+    if (page === undefined) continue;
     if (idx > last) out.push({ kind: 'text', value: text.slice(last, idx) });
     out.push({ kind: 'link', value: m[0], page, label });
     last = idx + m[0].length;
