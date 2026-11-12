@@ -1,6 +1,6 @@
-/** Os dois PDFs analisados e o mapa artigo → página de cada um. */
+/** O PDF de referência (parecer homologado) e o mapa artigo → página. */
 
-export type DocId = 'a' | 'b';
+export type DocId = 'b';
 
 export interface SourceDoc {
   id: DocId;
@@ -16,23 +16,9 @@ export interface SourceDoc {
 }
 
 export const DOCS: Record<DocId, SourceDoc> = {
-  a: {
-    id: 'a',
-    name: 'Minuta anterior',
-    tag: 'MINUTA',
-    total: 107,
-    file: 'pdfs/minuta.pdf',
-    arts: {
-      '1': 37, '2': 38, '3': 39, '4': 39, '5': 40, '6': 41, '7': 41, '8': 42, '9': 43, '10': 43,
-      '11': 43, '12': 44, '13': 44, '14': 45, '15': 45, '16': 45, '17': 46, '18': 46, '19': 47, '20': 48,
-      '21': 48, '22': 49, '23': 49, '24': 49, '25': 49, '26': 50, '27': 51, '28': 51, '29': 51, '30': 51,
-      '31': 52, '32': 52, '33': 53, '34': 54, '35': 56, '36': 57, '37': 57, '38': 58, '39': 58, '40': 58,
-    },
-    sec5: 18,
-  },
   b: {
     id: 'b',
-    name: 'Parecer CNE/CP 15/2026, texto homologado',
+    name: 'Parecer CNE/CP 15/2026 homologado (DOU 11/11/2026, Seção 1, p. 141)',
     tag: 'HOMOLOGADO',
     total: 65,
     file: 'pdfs/parecer-homologado.pdf',

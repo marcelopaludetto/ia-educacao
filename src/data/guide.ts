@@ -170,7 +170,7 @@ export const SCHOOL_DUTIES: Checklist[] = [
       'Integridade acadêmica',
       'Identificação e mitigação de vieses',
     ],
-    extra: { title: 'Prazo', text: '12 meses após a publicação para adequar políticas, práticas e contratos. As vedações do Art. 41 valem desde a publicação.', ref: 'Art. 46' },
+    extra: { title: 'Prazo', text: '12 meses, contados da publicação da resolução pelo CNE, para adequar políticas, práticas e contratos. As vedações do Art. 41 valem desde essa publicação.', ref: 'Art. 46' },
   },
 ];
 
@@ -182,7 +182,8 @@ export const ATTENTION = [
   { title: 'Anos Finais: o que conta como mediação', text: 'O Art. 23 exige mediação de profissionais e veda uso individual ou não supervisionado de IA generativa. O texto não define se uma tarefa de casa com ferramenta generativa, orientada pelo professor, cumpre o requisito.', ref: 'Art. 23' },
   { title: 'Uso individual fica fora do alcance', text: 'A norma separa o uso promovido pela escola do uso que alunos e professores fazem por conta própria, reconhecendo que este tem controle institucional limitado. As obrigações recaem sobre o primeiro.', ref: 'Art. 1º, §4º' },
   { title: 'Treinamento de modelos com dados de menores', text: 'A vedação para crianças e adolescentes não admite autorização. Contratos de plataformas usadas na Educação Básica precisam excluir esse uso, e a vedação vale desde a publicação.', ref: 'Art. 15, par. único · Art. 41, XI · Art. 46' },
-  { title: 'Confira o texto do Diário Oficial', text: 'O PDF analisado traz o “Projeto de Resolução” anexo ao parecer, com a data de homologação em branco. A imprensa relata ajustes negociados entre CNE e MEC na parte de correção de dissertativas; o PDF já contém a pré-correção, mas a redação publicada pode ter diferenças pontuais.' },
+  { title: 'Homologado não é o mesmo que em vigor', text: 'O ministro homologou o parecer “na forma do Projeto de Resolução a ele anexado” (DOU de 11/11/2026). Falta o CNE publicar a resolução numerada: o Art. 47 diz que ela vigora a partir da publicação, e é dessa data que contam os 12 meses de adequação do Art. 46 e a aplicação imediata das vedações do Art. 41.', ref: 'Art. 46 · Art. 47' },
+  { title: 'Remissão trocada no Anexo II', text: 'No quadro de risco, a pré-correção de dissertativas remete ao “art. 39, § 4º”, mas a definição de pré-correção está no Art. 40, § 4º (o Art. 39 trata de risco moderado e não tem § 4º). Leia como Art. 40, § 4º, e confira se a resolução publicada corrige.', ref: 'Anexo II · Art. 40, §4º' },
 ];
 
 /* ---------- Glossário ---------- */
@@ -208,11 +209,8 @@ export const NAV = [
     { id: 'escola', label: 'Escola' },
     { id: 'atencao', label: 'Atenção' },
   ] },
-  { group: 'Comparação', items: [
-    { id: 'mudancas', label: 'O que mudou' },
-    { id: 'concordancia', label: 'Por artigo' },
-  ] },
   { group: 'Referência', items: [
+    { id: 'documento', label: 'O documento' },
     { id: 'termos', label: 'Termos' },
   ] },
 ];

@@ -16,8 +16,6 @@ npm run preview   # serve dist/ localmente
 | Para mudar…                              | Edite                              |
 | ---------------------------------------- | ---------------------------------- |
 | Regras de “Pode ou não pode”             | `src/data/rules.ts`                |
-| Diferenças minuta × homologado           | `src/data/diffs.ts`                |
-| Concordância artigo por artigo           | `src/data/concordance.ts`          |
 | Etapas, risco, currículo, deveres, termos, menu | `src/data/guide.ts`         |
 | Mapa artigo → página dos PDFs            | `src/data/docs.ts`                 |
 | PDFs de origem (nomes fixos)             | `public/pdfs/`                     |

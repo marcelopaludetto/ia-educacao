@@ -1,0 +1,126 @@
+---
+/**
+ * Mapa do PDF homologado: situação legal, partes do documento e onde está
+ * cada capítulo. Os links usam a classe "art" e abrem no visor de PDF.
+ */
+import Section from './Section.astro';
+import { DOCS, pdfUrl } from '../data/docs';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const d = DOCS.b;
+
+const timeline = [
+  { date: '1º/9/2026', text: 'Conselho Pleno do CNE aprova o parecer e o projeto de resolução, por unanimidade.', done: true },
+  { date: '6/10/2026', text: 'Súmula do parecer publicada no Diário Oficial.', done: true },
+  { date: '11/11/2026', text: 'Despacho do ministro, de 10/11, publicado no DOU (Seção 1, p. 141): homologa o parecer “na forma do Projeto de Resolução a ele anexado”.', done: true },
+  { date: 'A seguir', text: 'O CNE publica a resolução numerada. Ela entra em vigor nessa data (Art. 47), as vedações do Art. 41 passam a valer e começam os 12 meses de adequação (Art. 46).', done: false },
+];
+
+const parts = [
+  {
+    title: 'Parecer CNE/CP 15/2026',
+    pages: 'p. 1 a 33',
+    note: 'Fundamenta e explica. Não cria obrigações sozinho: serve para interpretar a resolução.',
+    rows: [
+      { label: 'Seção 1 – Introdução', page: 1 },
+      { label: 'Seção 2 – Comissão e metodologia', page: 3 },
+      { label: 'Seção 3 – Os 13 princípios', page: 5 },
+      { label: 'Seção 4 – Adoção, governança, transparência, limites', page: 12 },
+      { label: 'Seção 5 – Educação Básica', page: 16 },
+      { label: 'Seção 6 – Educação Superior', page: 20 },
+      { label: 'Seção 7 – Educação Profissional e Tecnológica', page: 23 },
+      { label: 'Seção 8 – Classificação de risco', page: 23 },
+      { label: 'Seção 9 – Considerações finais, voto e decisão', page: 29 },
+    ],
+  },
+  {
+    title: 'Projeto de Resolução, 47 artigos',
+    pages: 'p. 34 a 50',
+    note: 'É a parte normativa: o texto que vira a resolução e que as escolas e fornecedores precisam cumprir.',
+    rows: [
+      { label: 'Cap. I – Disposições gerais e definições', arts: 'Arts. 1º a 3º', page: 34 },
+      { label: 'Cap. II – Princípios', arts: 'Arts. 4º e 5º', page: 35 },
+      { label: 'Cap. III – Adoção, uso e governança', arts: 'Arts. 6º a 16', page: 36 },
+      { label: 'Cap. IV – Educação Básica', arts: 'Arts. 17 a 24', page: 40 },
+      { label: 'Cap. V – Educação Superior', arts: 'Arts. 25 a 30', page: 42 },
+      { label: 'Cap. VI – Educação Profissional e Tecnológica', arts: 'Arts. 31 a 35', page: 44 },
+      { label: 'Cap. VII – Risco, salvaguardas e vedações', arts: 'Arts. 36 a 42', page: 45 },
+      { label: 'Cap. VIII – Disposições finais e prazos', arts: 'Arts. 43 a 47', page: 50 },
+    ],
+  },
+  {
+    title: 'Anexos',
+    pages: 'p. 51 a 65',
+    note: 'Integram a resolução (Art. 2º, §2º) como referência para interpretar os conceitos e a classificação.',
+    rows: [
+      { label: 'Anexo I – Glossário com 94 verbetes', page: 51 },
+      { label: 'Anexo II – Guia de interpretação da classificação de risco', page: 61 },
+    ],
+  },
+];
+---
+<Section id="documento" title="O documento homologado" eyebrow="Referência">
+  <p slot="intro">Um único PDF de {d.total} páginas, com o carimbo “Parecer homologado” na primeira página. Clique em qualquer parte para abrir o PDF na página certa.</p>
+
+  <ol class="timeline" aria-label="Situação do documento">
+    {timeline.map((t) => (
+      <li class:list={[{ next: !t.done }]}>
+        <span class="date">{t.date}</span>
+        <span class="txt">{t.text}</span>
+      </li>
+    ))}
+  </ol>
+
+  <div class="parts">
+    {parts.map((p) => (
+      <div class="card part">
+        <h3>{p.title} <span class="pg">{p.pages}</span></h3>
+        <p class="muted small">{p.note}</p>
+        <ul>
+          {p.rows.map((r) => (
+            <li>
+              <a
+                class="art"
+                href={pdfUrl('b', r.page, base)}
+                target="_blank"
+                rel="noopener"
+                data-doc="b"
+                data-page={r.page}
+                data-label={r.label}
+              >
+                <span class="lbl">{r.label}</span>
+                {'arts' in r && <span class="arts">{r.arts}</span>}
+                <span class="p">p. {r.page}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <p class="dl"><a href={`${base}${d.file}`} target="_blank" rel="noopener">Baixar o PDF completo ({d.total} páginas)</a> · <a href="https://www.in.gov.br/web/dou/-/despacho-mec-de-10-de-novembro-de-2026-743562031" target="_blank" rel="noopener">Despacho no DOU</a></p>
+</Section>
+
+<style>
+  .timeline { list-style: none; padding: 0; margin-bottom: 22px; display: grid; gap: 0; border-left: 2px solid var(--line); max-width: 78ch; }
+  .timeline li { position: relative; display: grid; grid-template-columns: 7.5rem 1fr; gap: 12px; padding: 8px 0 8px 18px; }
+  .timeline li::before { content: ''; position: absolute; left: -7px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--ok); }
+  .timeline li.next::before { background: var(--surface); border: 2px solid var(--accent); }
+  .date { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); padding-top: 2px; }
+  .next .date { color: var(--accent); }
+  @media (max-width: 560px) { .timeline li { grid-template-columns: 1fr; gap: 2px; } }
+
+  .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .part { padding: 18px; gap: 8px; }
+  .part h3 { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .pg { font-family: var(--font-mono); font-size: .75rem; font-weight: 400; color: var(--muted); }
+  .part ul { list-style: none; padding: 0; margin-top: 4px; display: flex; flex-direction: column; }
+  .part li + li { border-top: 1px solid var(--line); }
+  .part a { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; padding: 8px 4px; text-decoration: none; color: var(--ink); font-size: .92rem; border-radius: 4px; }
+  .part a:hover { background: var(--accent-soft); }
+  .lbl { grid-column: 1; }
+  .arts { grid-column: 1; font-family: var(--font-mono); font-size: .74rem; color: var(--muted); }
+  .p { grid-column: 2; grid-row: 1; font-family: var(--font-mono); font-size: .76rem; color: var(--accent); white-space: nowrap; }
+  .dl { margin-top: 16px; font-size: .92rem; }
+</style>
