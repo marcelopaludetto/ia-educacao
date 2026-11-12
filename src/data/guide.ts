@@ -101,7 +101,7 @@ export const TIERS: Tier[] = [
     level: 4, name: 'Incompatível', ref: 'Art. 41',
     summary: 'Vedado em qualquer escola ou rede.',
     examples: ['Reconhecimento de emoções', 'Vigilância biométrica contínua', 'Pontuação social', 'Nota de redação dada só pela IA', 'Decisão 100% automatizada sobre aprovação ou sanção', 'Dados de alunos para publicidade', 'Dados de crianças e adolescentes para treinar modelos de terceiros'],
-    requires: ['Não usar. Estas vedações valem desde a publicação da resolução, sem esperar os 12 meses de adequação.'],
+    requires: ['Não usar. Estas vedações valem desde 11/11/2026, data de publicação da resolução, sem esperar os 12 meses de adequação.'],
     requiresRef: 'Art. 46',
   },
 ];
@@ -170,7 +170,7 @@ export const SCHOOL_DUTIES: Checklist[] = [
       'Integridade acadêmica',
       'Identificação e mitigação de vieses',
     ],
-    extra: { title: 'Prazo', text: '12 meses, contados da publicação da resolução pelo CNE, para adequar políticas, práticas e contratos. As vedações do Art. 41 valem desde essa publicação.', ref: 'Art. 46' },
+    extra: { title: 'Prazo', text: '12 meses, contados da publicação da resolução (11/11/2026), ou seja, até 11/11/2027, para adequar políticas, práticas e contratos. As vedações do Art. 41 já valem.', ref: 'Art. 46' },
   },
 ];
 
@@ -182,8 +182,9 @@ export const ATTENTION = [
   { title: 'Anos Finais: o que conta como mediação', text: 'O Art. 23 exige mediação de profissionais e veda uso individual ou não supervisionado de IA generativa. O texto não define se uma tarefa de casa com ferramenta generativa, orientada pelo professor, cumpre o requisito.', ref: 'Art. 23' },
   { title: 'Uso individual fica fora do alcance', text: 'A norma separa o uso promovido pela escola do uso que alunos e professores fazem por conta própria, reconhecendo que este tem controle institucional limitado. As obrigações recaem sobre o primeiro.', ref: 'Art. 1º, §4º' },
   { title: 'Treinamento de modelos com dados de menores', text: 'A vedação para crianças e adolescentes não admite autorização. Contratos de plataformas usadas na Educação Básica precisam excluir esse uso, e a vedação vale desde a publicação.', ref: 'Art. 15, par. único · Art. 41, XI · Art. 46' },
-  { title: 'Homologado não é o mesmo que em vigor', text: 'O ministro homologou o parecer “na forma do Projeto de Resolução a ele anexado” (DOU de 11/11/2026). Falta o CNE publicar a resolução numerada: o Art. 47 diz que ela vigora a partir da publicação, e é dessa data que contam os 12 meses de adequação do Art. 46 e a aplicação imediata das vedações do Art. 41.', ref: 'Art. 46 · Art. 47' },
-  { title: 'Remissão trocada no Anexo II', text: 'No quadro de risco, a pré-correção de dissertativas remete ao “art. 39, § 4º”, mas a definição de pré-correção está no Art. 40, § 4º (o Art. 39 trata de risco moderado e não tem § 4º). Leia como Art. 40, § 4º, e confira se a resolução publicada corrige.', ref: 'Anexo II · Art. 40, §4º' },
+  { title: 'Já está em vigor', text: 'A Resolução CNE/CP nº 1, de 11/11/2026, foi publicada e vigora desde essa data (Art. 47). As vedações do Art. 41 já se aplicam, e o prazo de adequação do Art. 46 vai até 11/11/2027.', ref: 'Art. 46 · Art. 47' },
+  { title: 'Classificação de risco tem de estar documentada', text: 'A classificação vale para cada funcionalidade e finalidade, não para o sistema como um todo. A ausência de classificação documentada não autoriza o uso sob presunção de baixo risco, e a falta de informações do fornecedor para classificar impede a contratação e o uso.', ref: 'Anexo II' },
+  { title: 'Contratos com fornecedores', text: 'Os contratos de sistemas de IA precisam prever governança, auditoria, monitoramento e responsabilização dos fornecedores.', ref: 'Art. 5º' },
 ];
 
 /* ---------- Glossário ---------- */

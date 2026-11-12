@@ -13,7 +13,8 @@ const timeline = [
   { date: '1º/9/2026', text: 'Conselho Pleno do CNE aprova o parecer e o projeto de resolução, por unanimidade.', done: true },
   { date: '6/10/2026', text: 'Súmula do parecer publicada no Diário Oficial.', done: true },
   { date: '11/11/2026', text: 'Despacho do ministro, de 10/11, publicado no DOU (Seção 1, p. 141): homologa o parecer “na forma do Projeto de Resolução a ele anexado”.', done: true },
-  { date: 'A seguir', text: 'O CNE publica a resolução numerada. Ela entra em vigor nessa data (Art. 47), as vedações do Art. 41 passam a valer e começam os 12 meses de adequação (Art. 46).', done: false },
+  { date: '11/11/2026', text: 'O CNE publica a Resolução CNE/CP nº 1/2026, que entra em vigor na mesma data (Art. 47). As vedações do Art. 41 já valem.', done: true },
+  { date: '11/11/2027', text: 'Termina o prazo de 12 meses para adequar políticas, práticas, governança e contratos (Art. 46).', done: false },
 ];
 
 const parts = [
@@ -99,7 +100,7 @@ const parts = [
     ))}
   </div>
 
-  <p class="dl"><a href={`${base}${d.file}`} target="_blank" rel="noopener">Baixar o PDF completo ({d.total} páginas)</a> · <a href="https://www.in.gov.br/web/dou/-/despacho-mec-de-10-de-novembro-de-2026-743562031" target="_blank" rel="noopener">Despacho no DOU</a></p>
+  <p class="dl"><a href={`${base}${d.file}`} target="_blank" rel="noopener">Baixar o PDF completo ({d.total} páginas)</a> · <a href="https://www.in.gov.br/web/dou/-/despacho-mec-de-10-de-novembro-de-2026-743562031" target="_blank" rel="noopener">Despacho no DOU</a> · <a href="/pdfs/resolucao-cne-cp-1-2026.pdf" target="_blank" rel="noopener">Resolução CNE/CP nº 1/2026 (PDF)</a></p>
 </Section>
 
 <style>
